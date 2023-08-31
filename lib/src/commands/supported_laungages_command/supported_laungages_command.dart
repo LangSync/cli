@@ -41,17 +41,28 @@ class SupportedLangsCommand extends Command<int> {
       return await _handleLangSupport(lang);
     } else if (langsOption != null) {
       final langs = langsOption.split(',').map((e) => e.trim()).toList();
-      final langsStatusCode = <int>{};
 
-      for (final lang in langs) {
-        langsStatusCode.add(await _handleLangSupport(lang));
-      }
-
-      return langsStatusCode.contains(ExitCode.software.code)
-          ? ExitCode.software.code
-          : ExitCode.success.code;
+      return await _checkLangsSupport(langs);
     } else {
-      return Future.value(super.run());
+      logger.info('you will need to provide one or many langs to check.');
+
+      String langPrompt = logger.prompt(
+        'What language(s) do you want to check? (comma separated): ',
+      );
+
+      langPrompt = langPrompt.trim();
+
+      if (langPrompt.isEmpty) {
+        logger.err('No language(s) provided.');
+        return ExitCode.usage.code;
+      } else {
+        final langs = langPrompt.split(',').map((e) => e.trim()).toList();
+        if (langs.length == 1) {
+          return await _handleLangSupport(langs.first);
+        } else {
+          return await _checkLangsSupport(langs);
+        }
+      }
     }
   }
 
@@ -70,5 +81,17 @@ class SupportedLangsCommand extends Command<int> {
 
       return ExitCode.software.code;
     }
+  }
+
+  Future<int> _checkLangsSupport(List<String> langs) async {
+    final langsStatusCode = <int>{};
+
+    for (final lang in langs) {
+      langsStatusCode.add(await _handleLangSupport(lang));
+    }
+
+    return langsStatusCode.contains(ExitCode.software.code)
+        ? ExitCode.software.code
+        : ExitCode.success.code;
   }
 }

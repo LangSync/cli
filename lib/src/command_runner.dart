@@ -41,6 +41,7 @@ class LangsyncCommandRunner extends CompletionCommandRunner<int> {
 
     addCommand(AccountCommand(logger: _logger));
     addCommand(ConfigCommand(logger: _logger));
+    addCommand(SupportedLangsCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
   }
 

@@ -22,6 +22,12 @@ class NetClient {
     });
   }
 
+  Future<bool> supportsLang(String lang) {
+    return _makeRes<bool>('langs/$lang', 'GET', {}, (res) {
+      return res['isSupported'] as bool;
+    });
+  }
+
   Future<T> _makeRes<T>(
     String endpoint,
     String method,

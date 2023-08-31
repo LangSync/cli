@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:langsync/src/etc/controllers/yaml.dart';
 import 'package:mason_logger/mason_logger.dart';
-import 'package:yaml/yaml.dart' as yaml;
 
 class ConfigCreateCommand extends Command<int> {
   ConfigCreateCommand({
@@ -23,7 +23,7 @@ class ConfigCreateCommand extends Command<int> {
     try {
       final file = File('./langsync.yaml');
 
-      if (await file.exists()) {
+      if (file.existsSync()) {
         logger.info('langsync.yaml already exists in the current directory.');
 
         await _requestToOverwrite(file);
@@ -86,27 +86,24 @@ class ConfigCreateCommand extends Command<int> {
     );
 
     final targetLangsList = targetLangs.trim().split(',').map((e) => e.trim());
+
     if (targetLangsList.isEmpty) {
       logger.err('No target languages were provided. Please try again.');
       return;
     }
 
-    final config = {
-      'source': sourceLocalizationFilePath,
-      'output': outputDir,
-      'target': targetLangsList,
-    };
+    final config = YamlController.futureYamlFormatFrom(
+      outputDir: outputDir,
+      sourceLocalizationFilePath: sourceLocalizationFilePath,
+      targetLangsList: targetLangsList,
+    );
 
-    final configYaml = logger.info('Creating langsync.yaml file...');
-    final yamlFile = await File('./langsync.yaml').create();
-    await yamlFile.writeAsString("langsync:");
+    logger.info('Creating langsync.yaml file...');
 
-    for (final entr in config.entries) {
-      await yamlFile.writeAsString(
-        "\n  ${entr.key}: ${entr.value}",
-        mode: FileMode.append,
-      );
-    }
+    await YamlController.createConfigFile();
+    await YamlController.writeToConfigFile('langsync:\n');
+
+    await YamlController.iterateAndWriteToConfigFile(config);
 
     logger.info('langsync.yaml file created successfully.');
   }

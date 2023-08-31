@@ -1,4 +1,7 @@
 langsync:
+
   source: ./example/locales/en.json
+
   output: ./example/locales
-  target: (arabic, spanish, tu, zh)
+
+  target: [italian, arabic]

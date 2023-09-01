@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:hive/hive.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 class LogoutCommand extends Command<int> {
@@ -29,10 +30,22 @@ class LogoutCommand extends Command<int> {
 
       return ExitCode.success.code;
     } else {
-      logger.info('Logging out from the current account...');
-      await configBox.delete('apiKey');
-      logger.info('Successfully logged out.');
-      return ExitCode.success.code;
+      final logoutProgress = logger.progress('Logging out from the account..');
+
+      try {
+        await configBox.delete('apiKey');
+        logoutProgress.complete('Successfully logged out.');
+
+        return ExitCode.success.code;
+      } catch (e) {
+        logger.customErr(
+          error: e,
+          progress: logoutProgress,
+          update: 'Something went wrong while logging out, please try again.',
+        );
+
+        return ExitCode.ioError.code;
+      }
     }
   }
 }

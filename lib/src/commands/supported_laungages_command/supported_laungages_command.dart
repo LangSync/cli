@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:args/command_runner.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
 
@@ -31,6 +32,7 @@ class SupportedLangsCommand extends Command<int> {
   FutureOr<int>? run() async {
     final langOption = argResults?['lang'] as String?;
     final langsOption = argResults?['langs'] as String?;
+
     if (langOption != null && langsOption != null) {
       logger.err("Can't use both --lang and --langs at the same time.");
       return ExitCode.usage.code;
@@ -38,7 +40,7 @@ class SupportedLangsCommand extends Command<int> {
 
     if (langOption != null) {
       final lang = langOption.toLowerCase();
-      return await _handleLangSupport(lang);
+      return await _handleLangSupport(lang, _progressFor(lang));
     } else if (langsOption != null) {
       final langs = langsOption.split(',').map((e) => e.trim()).toList();
 
@@ -58,7 +60,8 @@ class SupportedLangsCommand extends Command<int> {
       } else {
         final langs = langPrompt.split(',').map((e) => e.trim()).toList();
         if (langs.length == 1) {
-          return await _handleLangSupport(langs.first);
+          return await _handleLangSupport(
+              langs.first, _progressFor(langs.first));
         } else {
           return await _checkLangsSupport(langs);
         }
@@ -66,18 +69,25 @@ class SupportedLangsCommand extends Command<int> {
     }
   }
 
-  Future<int> _handleLangSupport(String lang) async {
+  Future<int> _handleLangSupport(String lang, Progress prog) async {
     try {
+      prog.update('Checking language $lang support...');
+
       final isSupported = await NetClient.instance.supportsLang(lang);
       if (isSupported) {
-        logger.info('Language $lang is supported.');
+        prog.complete('Language $lang is supported.');
       } else {
-        logger.info('Language $lang is not supported.');
+        prog.complete('Language $lang is not supported.');
       }
 
       return ExitCode.success.code;
     } catch (e) {
-      logger.err("Couldn't check language support.");
+      logger.customErr(
+        error: e,
+        progress: prog,
+        update:
+            'Something went wrong while checking language $lang support, please try again.',
+      );
 
       return ExitCode.software.code;
     }
@@ -87,11 +97,17 @@ class SupportedLangsCommand extends Command<int> {
     final langsStatusCode = <int>{};
 
     for (final lang in langs) {
-      langsStatusCode.add(await _handleLangSupport(lang));
+      langsStatusCode.add(
+        await _handleLangSupport(lang, _progressFor(lang)),
+      );
     }
 
     return langsStatusCode.contains(ExitCode.software.code)
         ? ExitCode.software.code
         : ExitCode.success.code;
+  }
+
+  Progress _progressFor(String lang) {
+    return logger.progress('Checking language $lang support...');
   }
 }

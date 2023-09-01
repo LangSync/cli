@@ -21,7 +21,7 @@ class UpdateCommand extends Command<int> {
   final PubUpdater _pubUpdater;
 
   @override
-  String get description => 'Update the CLI.';
+  String get description => 'Update the langSync CLI.';
 
   static const String commandName = 'update';
 

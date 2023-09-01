@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:mason_logger/mason_logger.dart';
+
 extension IterableExtension<T> on String {
   String hiddenBy(String hideChar) {
     if (contains('-')) {
@@ -45,5 +47,19 @@ extension DateExte on DateTime {
     } else {
       return 'just now';
     }
+  }
+}
+
+extension LoggerExt on Logger {
+  void customErr({
+    required Progress progress,
+    required String update,
+    required Object error,
+  }) {
+    const isDebugMode = bool.fromEnvironment('DEBUG');
+
+    return isDebugMode
+        ? progress.fail(error.toString())
+        : progress.fail(update);
   }
 }

@@ -14,7 +14,7 @@ class AccountCommand extends Command<int> {
   }
 
   @override
-  String get description => 'Manage your account.';
+  String get description => 'Manage the authenticated account in use.';
 
   @override
   String get name => 'account';

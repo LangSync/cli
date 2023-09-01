@@ -27,20 +27,31 @@ class ConfigValidateCommand extends Command<int> {
       return ExitCode.success.code;
     }
 
-    logger.info('Validating langsync.yaml file...');
+    final validationProgress =
+        logger.progress('Validating the existent langsync.yaml file...');
+
     final yamlMap = await YamlController.parsedYaml;
 
     final langsyncConfig = yamlMap['langsync'];
 
     if (langsyncConfig == null) {
-      logger.err('langsync.yaml file is missing a `langsync` key.');
+      validationProgress.complete(
+        'langsync.yaml file is missing a `langsync` key.',
+      );
+
       return ExitCode.software.code;
     } else {
+      validationProgress.update('Parsing the configuration file...');
+
       final parsedYaml = await YamlController.parsedYaml;
+      validationProgress.update('Validating the configuration file...');
+
       final isValid = YamlController.validateConfigFields(parsedYaml);
+
+      validationProgress.complete('Validation task completed.');
+
       if (isValid) {
         YamlController.iterateAndLogConfig(parsedYaml, logger);
-
         logger.info('langsync.yaml file is valid.');
         return ExitCode.success.code;
       } else {

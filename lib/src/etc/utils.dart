@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 final utils = Utils();
 
@@ -27,5 +28,34 @@ class Utils {
 
   String endpoint(String path) {
     return 'http://192.168.1.106:5559${path.startsWith("/") ? path : "/$path"}';
+  }
+
+  List<String> randomLoadingFrames() {
+    final framesList = [
+      ..._firstTypeLists(),
+      ['- ', r'\ ', '| ', '/ '],
+      ['◐ ', '◓ ', '◑ ', '◒ '],
+    ];
+
+    final ran = Random();
+
+    return framesList[ran.nextInt(framesList.length)];
+  }
+
+  List<List<String>> _firstTypeLists() {
+    final firstTypeSymbols = r".-+*=~|o#x";
+
+    return List.generate(firstTypeSymbols.length, (i) {
+      final char = firstTypeSymbols[i];
+      return [
+        '$char   ',
+        '${char * 2}  ',
+        '${char * 3} ',
+        '${char * 4}',
+        ' ${char * 3}',
+        '  ${char * 2}',
+        '   $char'
+      ];
+    });
   }
 }

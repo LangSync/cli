@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:args/command_runner.dart';
 import 'package:hive/hive.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/utils.dart';
 import 'package:mason_logger/mason_logger.dart';
 
@@ -28,8 +29,10 @@ class AuthCommand extends Command<int> {
 
     if (utils.isValidApiKey(apiKey)) {
       final configBox = Hive.box<dynamic>('config');
+
+      final savingProgress = logger.progress('Your API key is being saved..');
+
       try {
-        logger.info('Your API key is being saved..');
         if (configBox.get('apiKey') != null) {
           await configBox.delete('apiKey');
 
@@ -38,12 +41,15 @@ class AuthCommand extends Command<int> {
 
         await configBox.put('apiKey', apiKey);
 
-        logger.info('Your API key has been saved successfully.');
+        savingProgress.complete('Your API key has been saved successfully.');
 
         return ExitCode.success.code;
       } catch (e) {
-        logger.err(
-          'Something went wrong while saving your API key, please try again.',
+        logger.customErr(
+          error: e,
+          progress: savingProgress,
+          update:
+              'Something went wrong while saving your API key, please try again.',
         );
 
         return ExitCode.ioError.code;

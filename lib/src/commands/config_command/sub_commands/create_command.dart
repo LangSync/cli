@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:langsync/src/etc/controllers/yaml.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 class ConfigCreateCommand extends Command<int> {
@@ -43,9 +44,11 @@ class ConfigCreateCommand extends Command<int> {
   Future<void> _requestToOverwrite(File file) async {
     final userAnswer = logger.prompt('Do you want to overwrite it? (Y/n)');
     final toL = userAnswer.toLowerCase();
+
     if (toL == 'y' || toL == 'yes' || toL == 'yep' || toL == 'yeah') {
-      logger.info('Overwriting...');
+      final deleteLogger = logger.progress('Deleting langsync.yaml file...');
       await file.delete();
+      deleteLogger.complete('The already existing langsync.yaml file deleted.');
       await run();
     } else {
       logger.info('Aborting...');
@@ -98,13 +101,26 @@ class ConfigCreateCommand extends Command<int> {
       targetLangsList: targetLangsList,
     );
 
-    logger.info('Creating langsync.yaml file...');
+    final creationProgress = logger.progress('Creating langsync.yaml file...');
+    try {
+      await YamlController.createConfigFile();
 
-    await YamlController.createConfigFile();
-    await YamlController.writeToConfigFile('langsync:\n');
+      creationProgress.update('langsync.yaml file created.');
 
-    await YamlController.iterateAndWriteToConfigFile(config);
+      await YamlController.writeToConfigFile('langsync:\n');
+      creationProgress
+          .update('langsync.yaml file updated with your configuration');
 
-    logger.info('langsync.yaml file created successfully.');
+      await YamlController.iterateAndWriteToConfigFile(config);
+
+      creationProgress.complete('langsync.yaml file created successfully.');
+    } catch (e) {
+      logger.customErr(
+        error: e,
+        progress: creationProgress,
+        update:
+            'Something went wrong while creating the langsync.yaml file, please try again.',
+      );
+    }
   }
 }

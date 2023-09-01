@@ -1,7 +1,7 @@
 langsync:
 
-  source: ./example/locales/en.json
+  source: './example/locales/en.json' 
 
-  output: ./example/locales
+  output: './example/locales/' 
 
-  target: [italian, arabic]
+  target: '[arabix, german]' 

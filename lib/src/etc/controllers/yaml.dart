@@ -25,8 +25,6 @@ abstract class YamlController {
       throw Exception('Config file does not exist.');
     }
 
-    print('writing $s');
-
     configFileRef.writeAsStringSync(
       s,
       mode: FileMode.append,
@@ -61,7 +59,7 @@ abstract class YamlController {
       config,
       callback: (entry) async {
         await YamlController.writeToConfigFile(
-          '\n  ${entry.key}: ${entry.value}\n',
+          "\n  ${entry.key}: \'${entry.value}' \n",
         );
       },
     );
@@ -104,6 +102,7 @@ abstract class YamlController {
         logger.info('${entry.key}: ${entry.value}\n');
       },
     );
+
     logger.info('');
   }
 }

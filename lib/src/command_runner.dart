@@ -12,6 +12,7 @@ const executableName = 'langsync';
 const packageName = 'langsync';
 const description =
     '''
+
 An AI powered Command Line Interface (CLI) tool that helps you process your original language-specific files such translations, strings & texts.. and generates the corresponding translated files in the target language(s).
 ''';
 
@@ -59,9 +60,7 @@ class LangsyncCommandRunner extends CompletionCommandRunner<int> {
   Future<int> run(Iterable<String> args) async {
     try {
       final topLevelResults = parse(args);
-      if (topLevelResults['verbose'] == true) {
-        _logger.level = Level.verbose;
-      }
+
       return await runCommand(topLevelResults) ?? ExitCode.success.code;
     } on FormatException catch (e, stackTrace) {
       // On format errors, show the commands error message, root usage and

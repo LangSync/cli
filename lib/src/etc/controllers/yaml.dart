@@ -1,5 +1,7 @@
 // ignore_for_file: strict_raw_type
 import 'dart:io';
+import 'package:langsync/src/command_runner.dart';
+import 'package:langsync/src/etc/models/config.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:yaml/yaml.dart' as yaml;
 
@@ -36,11 +38,11 @@ abstract class YamlController {
     required String outputDir,
     required Iterable<String> targetLangsList,
   }) {
-    return {
-      'source': sourceLocalizationFilePath,
-      'output': outputDir,
-      'target': targetLangsList.toList(),
-    };
+    return LangSyncConfig(
+      sourceFile: sourceLocalizationFilePath,
+      outputDir: outputDir,
+      langs: targetLangsList,
+    ).toMap();
   }
 
   static void iterateOverConfig(
@@ -68,11 +70,15 @@ abstract class YamlController {
   static bool validateConfigFields(Map parsedYaml) {
     final langsyncConfig = parsedYaml['langsync'];
 
+    //  TODO: validate source file and output dir.
+
     if (langsyncConfig == null) {
       throw Exception('langsync.yaml file is missing a `langsync` key.');
     } else {
       final sourceLocalizationFilePath = langsyncConfig['source'];
+
       final outputDir = langsyncConfig['output'];
+
       final targetLangsList = langsyncConfig['target'];
 
       if (sourceLocalizationFilePath == null) {

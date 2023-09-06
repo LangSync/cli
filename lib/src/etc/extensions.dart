@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:math';
 
+import 'package:langsync/src/etc/models/config.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 extension IterableExtension<T> on String {
@@ -61,5 +63,17 @@ extension LoggerExt on Logger {
     return isDebugMode
         ? progress.fail(error.toString())
         : progress.fail(update);
+  }
+}
+
+extension MapExtension on Map {
+  LangSyncConfig toConfigModeled() {
+    return LangSyncConfig.fromMap(this);
+  }
+}
+
+extension JsonMapExtension on Map<String, dynamic> {
+  String toPrettyJson() {
+    return const JsonEncoder.withIndent('  ').convert(this);
   }
 }

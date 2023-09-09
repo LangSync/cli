@@ -14,6 +14,7 @@ const description =
     '''
 
 An AI powered Command Line Interface (CLI) tool that helps you process your original language-specific files such translations, strings & texts.. and generates the corresponding translated files in the target language(s).
+
 ''';
 
 /// {@template langsync_command_runner}

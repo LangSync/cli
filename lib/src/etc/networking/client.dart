@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:langsync/src/etc/models/config.dart';
-import 'package:langsync/src/etc/models/user_info.dart';
-import 'package:langsync/src/etc/utils.dart';
 import 'package:langsync/src/etc/models/partition.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
+import 'package:langsync/src/etc/models/user_info.dart';
+import 'package:langsync/src/etc/utils.dart';
 
 class NetClient {
   NetClient._();
@@ -88,7 +89,7 @@ class NetClient {
       '/process-translation',
       'POST',
       {'Authorization': 'Bearer $apiKey'},
-      {'jsonPartitionId': jsonPartitionId, 'langs': asConfig.langs},
+      {'jsonPartitionId': jsonPartitionId, 'langs': asConfig.langs.toList()},
       LocalizationResult.fromJson,
     );
   }
@@ -103,6 +104,27 @@ class NetClient {
       {'Authorization': 'Bearer $apiKey'},
       {'sourceFile': sourceFile},
       PartitionResponse.fromJson,
+    );
+  }
+
+  Future<bool> checkWetherApiKeyExistsForSomeUser({
+    required String apiKey,
+  }) async {
+    return _makeRes(
+      '/verify-api-key-existence',
+      'GET',
+      {'Authorization': 'Bearer $apiKey'},
+      {},
+      (res) {
+        final exists = res['exists'] as bool?;
+
+        if (exists == null) {
+          throw Exception(
+            "the 'exists' field does not exist in the response of this API endpoint",
+          );
+        }
+        return exists;
+      },
     );
   }
 }

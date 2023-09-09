@@ -14,7 +14,7 @@ class AuthCommand extends Command<int> {
   final Logger logger;
 
   @override
-  String get description => 'Authenticate your account with CLI';
+  String get description => 'Authenticate your account with CLI.';
 
   @override
   String get name => 'auth';
@@ -25,7 +25,7 @@ class AuthCommand extends Command<int> {
       ..info('Please, provide your account API key to authenticate.')
       ..info('You can find & manage your API keys from your dashboard.');
 
-    final apiKey = logger.prompt('Enter API Key here: ');
+    final apiKey = logger.prompt('Enter API key here: ');
 
     if (utils.isValidApiKey(apiKey)) {
       final configBox = Hive.box<dynamic>('config');

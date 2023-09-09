@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:hive/hive.dart';
 import 'package:langsync/src/command_runner.dart';
-import 'package:langsync/src/etc/networking/client.dart';
 import 'package:langsync/src/etc/utils.dart';
 
 Future<void> main(List<String> args) async {

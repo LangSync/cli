@@ -48,7 +48,7 @@ class SupportedLangsCommand extends Command<int> {
     } else {
       logger.info('you will need to provide one or many langs to check.');
 
-      String langPrompt = logger.prompt(
+      var langPrompt = logger.prompt(
         'What language(s) do you want to check? (comma separated): ',
       );
 
@@ -61,7 +61,9 @@ class SupportedLangsCommand extends Command<int> {
         final langs = langPrompt.split(',').map((e) => e.trim()).toList();
         if (langs.length == 1) {
           return await _handleLangSupport(
-              langs.first, _progressFor(langs.first));
+            langs.first,
+            _progressFor(langs.first),
+          );
         } else {
           return await _checkLangsSupport(langs);
         }

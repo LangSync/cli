@@ -1,11 +1,42 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:langsync/src/etc/extensions.dart';
+import 'package:langsync/src/etc/networking/client.dart';
+import 'package:mason_logger/mason_logger.dart';
+
 final utils = Utils();
 
 class Utils {
-  bool isValidApiKey(String apiKey) {
-    return true;
+  bool isValidApiKeyFormatted(String apiKey) {
+    final isNotEmpty = apiKey.isNotEmpty;
+    final hasValidLength = apiKey.length == 32;
+
+    return isNotEmpty && hasValidLength;
+  }
+
+  Future<bool> doesApiKeyExistsForSomeUser({
+    required String apiKey,
+    required Logger logger,
+  }) async {
+    final apiKeyCheckProgress = logger.progress('starting api key check..');
+
+    try {
+      final doesApiKeyExistsForSomeUser =
+          await NetClient.instance.checkWetherApiKeyExistsForSomeUser(
+        apiKey: apiKey,
+      );
+
+      return doesApiKeyExistsForSomeUser;
+    } catch (e) {
+      logger.customErr(
+        progress: apiKeyCheckProgress,
+        update: '',
+        error: e,
+      );
+
+      return false;
+    }
   }
 
   Directory localeDataDir() {
@@ -43,7 +74,7 @@ class Utils {
   }
 
   List<List<String>> _firstTypeLists() {
-    final firstTypeSymbols = r".-+*=~|o#x";
+    const firstTypeSymbols = '.-+*=~|o#x';
 
     return List.generate(firstTypeSymbols.length, (i) {
       final char = firstTypeSymbols[i];
@@ -51,7 +82,7 @@ class Utils {
         '$char   ',
         '${char * 2}  ',
         '${char * 3} ',
-        '${char * 4}',
+        (char * 4),
         ' ${char * 3}',
         '  ${char * 2}',
         '   $char'

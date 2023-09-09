@@ -1,6 +1,5 @@
 // ignore_for_file: strict_raw_type
 import 'dart:io';
-import 'package:langsync/src/command_runner.dart';
 import 'package:langsync/src/etc/models/config.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:yaml/yaml.dart' as yaml;
@@ -61,7 +60,7 @@ abstract class YamlController {
       config,
       callback: (entry) async {
         await YamlController.writeToConfigFile(
-          "\n  ${entry.key}: \'${entry.value}' \n",
+          "\n  ${entry.key}: '${entry.value}' \n",
         );
       },
     );

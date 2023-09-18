@@ -6,6 +6,9 @@ import 'package:langsync/src/etc/utils.dart';
 Future<void> main(List<String> args) async {
   final configDir = utils.localeDataDir();
   final langSyncDir = await Directory('${configDir.path}/langsync').create();
+  final a = utils.isValidApiKeyFormatted(
+    '1939cf5177f5ae3805c24cc56c03a8186969c8e15a26bcbf1ab3caf96daacabb',
+  );
 
   Hive.init(langSyncDir.path);
 

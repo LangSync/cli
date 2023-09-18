@@ -27,17 +27,22 @@ class AuthCommand extends Command<int> {
 
     final apiKey = logger.prompt('Enter API key here: ');
 
-    if (utils.isValidApiKey(apiKey)) {
+    if (utils.isValidApiKeyFormatted(apiKey)) {
       final configBox = Hive.box<dynamic>('config');
 
       final savingProgress = logger.progress('Your API key is being saved..');
 
       try {
         if (configBox.get('apiKey') != null) {
+          savingProgress.update('Deleting your previous set API key..');
+
           await configBox.delete('apiKey');
 
-          logger.info('Your previous API key has been deleted.');
+          savingProgress
+              .update('Your Previous API key has been deleted successfully.');
         }
+
+        savingProgress.update('Saving your API key..');
 
         await configBox.put('apiKey', apiKey);
 

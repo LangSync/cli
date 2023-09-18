@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:equatable/equatable.dart';
+import 'package:yaml/yaml.dart';
 
 class LangSyncConfig extends Equatable {
   const LangSyncConfig({
@@ -28,12 +29,16 @@ class LangSyncConfig extends Equatable {
   }
 
   factory LangSyncConfig.fromMap(Map<dynamic, dynamic> map) {
+    final langsyncMapField = map['langsync'] as Map;
+
+    final target = (langsyncMapField['target'] as YamlList)
+        .nodes
+        .map((e) => e.value as String);
+
     return LangSyncConfig(
-      sourceFile: map['source'] as String,
-      outputDir: map['output'] as String,
-      langs: List<String>.from(
-        map['target'] as List<String>,
-      ),
+      sourceFile: langsyncMapField['source'] as String,
+      outputDir: langsyncMapField['output'] as String,
+      langs: target,
     );
   }
 }

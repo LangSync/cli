@@ -55,7 +55,7 @@ class InfoCommand extends Command<int> {
 
     try {
       final userInfo = await NetClient.instance.userInfo(apiKey: apiKey);
-
+      fetchingProgress.update("fetched account's information successfully.");
       logger
         ..info('')
         ..info('The API key in use: $shownApiKey');

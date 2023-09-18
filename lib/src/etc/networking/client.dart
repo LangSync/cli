@@ -8,6 +8,8 @@ import 'package:langsync/src/etc/models/result_locale.dart';
 import 'package:langsync/src/etc/models/user_info.dart';
 import 'package:langsync/src/etc/utils.dart';
 
+import '../models/lang_output.dart';
+
 class NetClient {
   NetClient._();
 
@@ -80,17 +82,22 @@ class NetClient {
     return onSuccess(jsonDecode(asBytes) as Map<String, dynamic>);
   }
 
-  Future<LocalizationResult> startAIProcess({
+  Future<LocalizationOutput> startAIProcess({
     required LangSyncConfig asConfig,
     required String apiKey,
     required String jsonPartitionId,
+    bool includeOutput = false,
   }) {
     return _makeRes(
       '/process-translation',
       'POST',
       {'Authorization': 'Bearer $apiKey'},
-      {'jsonPartitionId': jsonPartitionId, 'langs': asConfig.langs.toList()},
-      LocalizationResult.fromJson,
+      {
+        'jsonPartitionId': jsonPartitionId,
+        'langs': asConfig.langs.toList(),
+        'includeOutput': includeOutput,
+      },
+      LocalizationOutput.fromJson,
     );
   }
 
@@ -124,6 +131,23 @@ class NetClient {
           );
         }
         return exists;
+      },
+    );
+  }
+
+  Future<List<LangOutput>> retrieveJsonPartitionWithOutput({
+    required String outputPartitionId,
+  }) {
+    return _makeRes(
+      "/get-partitioned-json-of-user",
+      "GET",
+      {},
+      {},
+      (res) {
+        final output = res["output"] as List<Map<String, dynamic>>;
+        final modelled = output.map(LangOutput.fromJson).toList();
+
+        return modelled;
       },
     );
   }

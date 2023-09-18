@@ -10,7 +10,7 @@ final utils = Utils();
 class Utils {
   bool isValidApiKeyFormatted(String apiKey) {
     final isNotEmpty = apiKey.isNotEmpty;
-    final hasValidLength = apiKey.length == 32;
+    final hasValidLength = apiKey.length == 64;
 
     return isNotEmpty && hasValidLength;
   }
@@ -58,7 +58,7 @@ class Utils {
   }
 
   String endpoint(String path) {
-    return 'http://192.168.1.106:5559${path.startsWith("/") ? path : "/$path"}';
+    return 'http://192.168.1.103:5559${path.startsWith("/") ? path : "/$path"}';
   }
 
   List<String> randomLoadingFrames() {

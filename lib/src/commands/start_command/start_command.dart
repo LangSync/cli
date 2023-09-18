@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:hive/hive.dart';
 import 'package:langsync/src/etc/controllers/yaml.dart';
 import 'package:langsync/src/etc/extensions.dart';
+import 'package:langsync/src/etc/models/lang_output.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
@@ -64,24 +66,42 @@ class StartCommand extends Command<int> {
       'Processing the provided source File at; ${asConfig.sourceFile}',
     );
 
-    final jsonPartitionRes = await NetClient.instance.savePartitionsJson(
-      apiKey: apiKey,
-      sourceFile: File(asConfig.sourceFile),
-    );
-
     try {
+      final jsonPartitionRes = await NetClient.instance.savePartitionsJson(
+        apiKey: apiKey,
+        sourceFile: File(asConfig.sourceFile),
+      );
+
+      localizationProgress
+          .update('Your source file has been saved succesfully.');
+
+      logger.info(
+        'The ID of this operation is: ${jsonPartitionRes.partitionId}',
+      );
+
+      localizationProgress.update('Starting localization & translation..');
+
       final result = await NetClient.instance.startAIProcess(
         apiKey: apiKey,
         asConfig: asConfig,
         jsonPartitionId: jsonPartitionRes.partitionId,
       );
 
-      _writeResultToFiles(
-        outputDir: Directory(asConfig.outputDir),
-        res: result.result,
+      localizationProgress.complete(
+        'Localization Process completed, creating output files..',
       );
 
-      localizationProgress.complete('Localization Process completed');
+      final outputList =
+          await NetClient.instance.retrieveJsonPartitionWithOutput(
+        outputPartitionId: result.outputPartitionId,
+      );
+
+      logger.info(outputList.toString());
+
+      await _writeNewLocalizationFiles(
+        outputList: outputList,
+        outputDir: Directory(asConfig.outputDir),
+      );
 
       return ExitCode.success.code;
     } catch (e) {
@@ -112,5 +132,24 @@ class StartCommand extends Command<int> {
 
       file.writeAsStringSync(value.toPrettyJson());
     });
+  }
+
+  Future<void> _writeNewLocalizationFiles({
+    required List<LangOutput> outputList,
+    required Directory outputDir,
+  }) async {
+    for (int index = 0; index < outputList.length; index++) {
+      final current = outputList[index];
+
+      final fileName = '${current.lang}.json';
+
+      final file = File('${outputDir.path}/$fileName');
+
+      await file.create();
+      await file.writeAsString(jsonEncode(current.jsonFormattedResponse));
+      logger.info('file $fileName is created succesfully, ');
+    }
+
+    logger.info('All files are created ${outputDir.path} ');
   }
 }

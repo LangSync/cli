@@ -3,21 +3,19 @@ import 'package:equatable/equatable.dart';
 
 typedef JsonContentMap = Map<String, dynamic>;
 
-class LocalizationResult extends Equatable {
-  final Map<String, JsonContentMap> result;
+class LocalizationOutput extends Equatable {
+  final String outputPartitionId;
 
-  const LocalizationResult({
-    required this.result,
+  const LocalizationOutput({
+    required this.outputPartitionId,
   });
 
-  factory LocalizationResult.fromJson(Map<String, dynamic> res) {
-    return LocalizationResult(
-      result: res['result'] as Map<String, JsonContentMap>,
+  factory LocalizationOutput.fromJson(Map<String, dynamic> res) {
+    return LocalizationOutput(
+      outputPartitionId: res['partitionId'] as String,
     );
   }
 
   @override
-  List<Object?> get props => [
-        result,
-      ];
+  List<Object?> get props => [outputPartitionId];
 }

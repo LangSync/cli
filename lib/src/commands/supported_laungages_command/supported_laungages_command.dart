@@ -5,6 +5,8 @@ import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
 
+// TODO: openai offers 3 requests/min.
+
 class SupportedLangsCommand extends Command<int> {
   SupportedLangsCommand({
     required this.logger,
@@ -34,12 +36,14 @@ class SupportedLangsCommand extends Command<int> {
     final langsOption = argResults?['langs'] as String?;
 
     if (langOption != null && langsOption != null) {
-      logger.err("Can't use both --lang and --langs at the same time.");
+      logger.err(
+          "Can't use both --lang and --langs at the same time, try again with only one of them.");
       return ExitCode.usage.code;
     }
 
     if (langOption != null) {
       final lang = langOption.toLowerCase();
+
       return await _handleLangSupport(lang, _progressFor(lang));
     } else if (langsOption != null) {
       final langs = langsOption.split(',').map((e) => e.trim()).toList();
@@ -72,6 +76,12 @@ class SupportedLangsCommand extends Command<int> {
   }
 
   Future<int> _handleLangSupport(String lang, Progress prog) async {
+    if (lang.split(',').length > 1) {
+      logger.err('Only one language is allowed with the --lang flag');
+
+      return ExitCode.usage.code;
+    }
+
     try {
       prog.update('Checking language $lang support...');
 

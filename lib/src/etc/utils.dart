@@ -90,4 +90,12 @@ class Utils {
       ];
     });
   }
+
+  bool isConsideredTrue(String answer) {
+    return answer == 'y' ||
+        answer == 'yes' ||
+        answer == 'yep' ||
+        answer == 'yeah' ||
+        answer == 'true';
+  }
 }

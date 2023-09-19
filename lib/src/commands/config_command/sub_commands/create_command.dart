@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:langsync/src/etc/controllers/yaml.dart';
 import 'package:langsync/src/etc/extensions.dart';
+import 'package:langsync/src/etc/utils.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 class ConfigCreateCommand extends Command<int> {
@@ -19,6 +20,7 @@ class ConfigCreateCommand extends Command<int> {
 
   @override
   String get name => 'create';
+
   @override
   Future<int> run() async {
     try {
@@ -27,12 +29,9 @@ class ConfigCreateCommand extends Command<int> {
       if (file.existsSync()) {
         logger.info('langsync.yaml already exists in the current directory.');
 
-        await _requestToOverwrite(file);
-        return ExitCode.success.code;
+        return await _requestToOverwrite(file);
       } else {
-        await _promptForConfigFileCreation();
-
-        return ExitCode.success.code;
+        return await _promptForConfigFileCreation();
       }
     } catch (e) {
       logger.err(e.toString());
@@ -41,34 +40,41 @@ class ConfigCreateCommand extends Command<int> {
     }
   }
 
-  Future<void> _requestToOverwrite(File file) async {
+  Future<int> _requestToOverwrite(File file) async {
     final userAnswer = logger.prompt('Do you want to overwrite it? (Y/n)');
+
     final toL = userAnswer.toLowerCase();
 
-    if (toL == 'y' || toL == 'yes' || toL == 'yep' || toL == 'yeah') {
+    if (utils.isConsideredTrue(toL)) {
       final deleteLogger =
-          logger.customProgress('Deleting langsync.yaml file...');
+          logger.customProgress('Deleting the existant langsync.yaml file...');
+
       await file.delete();
-      deleteLogger.complete('The already existing langsync.yaml file deleted.');
-      await run();
+
+      deleteLogger.complete(
+          'The already existing langsync.yaml file is deleted succesfully');
+
+      return run();
     } else {
       logger.info('Aborting...');
-      return;
+
+      return ExitCode.success.code;
     }
   }
 
-  Future<void> _promptForConfigFileCreation() async {
+  Future<int> _promptForConfigFileCreation() async {
     final sourceLocalizationFilePath = logger.prompt(
       'Enter the path to the source localization file (e.g. ./locales/en.json): ',
     );
+
     final sourceFile = File(sourceLocalizationFilePath);
 
     if (!sourceFile.existsSync()) {
       logger.err(
-        '''The source localization file at $sourceLocalizationFilePath does not exist. Please try again.''',
+        '''The source localization file at $sourceLocalizationFilePath does not exist.''',
       );
 
-      return;
+      return ExitCode.software.code;
     }
 
     final outputDir = logger.prompt(
@@ -78,11 +84,24 @@ class ConfigCreateCommand extends Command<int> {
     final outputDirectory = Directory(outputDir);
 
     if (!outputDirectory.existsSync()) {
-      logger.err(
-        '''The output directory at $outputDir does not exist. Please try again.''',
+      final createDirAnswer = logger.prompt(
+        '''The output directory at $outputDir does not exist, do you want to create it? (Y/n)''',
       );
+      final toL = createDirAnswer.toLowerCase();
 
-      return;
+      if (utils.isConsideredTrue(toL)) {
+        final createDirProgress =
+            logger.customProgress('Creating the output directory...');
+
+        await outputDirectory.create(recursive: true);
+
+        createDirProgress.complete(
+          'The output directory is created successfully.',
+        );
+      } else {
+        logger.info('Aborting...');
+        return ExitCode.success.code;
+      }
     }
 
     final targetLangs = logger.prompt(
@@ -92,8 +111,15 @@ class ConfigCreateCommand extends Command<int> {
     final targetLangsList = targetLangs.trim().split(',').map((e) => e.trim());
 
     if (targetLangsList.isEmpty) {
-      logger.err('No target languages were provided. Please try again.');
-      return;
+      logger.err('No target languages were provided.');
+
+      return ExitCode.software.code;
+    } else {
+      if (targetLangsList.any((e) => e.length < 2)) {
+        logger.err('Some of the target languages are invalid.');
+
+        return ExitCode.software.code;
+      }
     }
 
     final config = YamlController.futureYamlFormatFrom(
@@ -104,18 +130,23 @@ class ConfigCreateCommand extends Command<int> {
 
     final creationProgress =
         logger.customProgress('Creating langsync.yaml file...');
+
     try {
       await YamlController.createConfigFile();
 
-      creationProgress.update('langsync.yaml file created.');
+      creationProgress.update(
+        'langsync.yaml file IS created, updating it with your config...',
+      );
 
       await YamlController.writeToConfigFile('langsync:\n');
-      creationProgress
-          .update('langsync.yaml file updated with your configuration');
 
       await YamlController.iterateAndWriteToConfigFile(config);
 
-      creationProgress.complete('langsync.yaml file created successfully.');
+      creationProgress.complete(
+        'langsync.yaml file created & updated with your config succesfully.',
+      );
+
+      return ExitCode.success.code;
     } catch (e) {
       logger.customErr(
         error: e,
@@ -123,6 +154,8 @@ class ConfigCreateCommand extends Command<int> {
         update:
             'Something went wrong while creating the langsync.yaml file, please try again.',
       );
+
+      return ExitCode.software.code;
     }
   }
 }

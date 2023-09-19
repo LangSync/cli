@@ -20,7 +20,7 @@ class NetClient {
   static NetClient get instance => _instance;
 
   Future<UserInfo> userInfo({required String apiKey}) {
-    return _makeRes<UserInfo>('users', 'GET', {
+    return _makeRes<UserInfo>('user', 'GET', {
       'Authorization': 'Bearer $apiKey',
     }, {}, (res) {
       return UserInfo.fromJson(res);

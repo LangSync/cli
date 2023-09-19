@@ -110,6 +110,6 @@ class SupportedLangsCommand extends Command<int> {
   }
 
   Progress _progressFor(String lang) {
-    return logger.progress('Checking language $lang support...');
+    return logger.customProgress('Checking language $lang support...');
   }
 }

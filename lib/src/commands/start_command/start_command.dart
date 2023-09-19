@@ -26,7 +26,7 @@ class StartCommand extends Command<int> {
 
   @override
   FutureOr<int>? run() async {
-    final localizationProgress = logger.progress('Starting localization');
+    final localizationProgress = logger.customProgress('Starting localization');
 
     final apiKey = Hive.box<dynamic>('config').get('apiKey') as String?;
 
@@ -50,11 +50,11 @@ class StartCommand extends Command<int> {
 
     try {
       YamlController.validateConfigFields(parsedYaml);
-    } catch (e) {
+    } catch (e, stacktrace) {
       logger.customErr(
         progress: localizationProgress,
         update: 'Something went wrong while validating config file',
-        error: e,
+        error: stacktrace,
       );
 
       return ExitCode.config.code;
@@ -104,11 +104,11 @@ class StartCommand extends Command<int> {
       );
 
       return ExitCode.success.code;
-    } catch (e) {
+    } catch (e, stacktrace) {
       logger.customErr(
         progress: localizationProgress,
         update: 'Something went wrong while starting localization',
-        error: e,
+        error: stacktrace,
       );
 
       return ExitCode.software.code;
@@ -119,7 +119,7 @@ class StartCommand extends Command<int> {
     required Map<String, JsonContentMap> res,
     required Directory outputDir,
   }) {
-    final progress = logger.progress('Writing results to files..');
+    final progress = logger.customProgress('Writing results to files..');
 
     res.forEach((key, value) {
       final file = File('${outputDir.path}/$key.json');

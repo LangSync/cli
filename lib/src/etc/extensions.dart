@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:langsync/src/etc/models/config.dart';
+import 'package:langsync/src/etc/utils.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 extension IterableExtension<T> on String {
@@ -61,6 +62,17 @@ extension LoggerExt on Logger {
     const isDebugMode = bool.fromEnvironment('DEBUG');
 
     return true ? progress.fail(error.toString()) : progress.fail(update);
+  }
+
+  Progress customProgress(String message) {
+    return progress(
+      message,
+      options: ProgressOptions(
+        animation: ProgressAnimation(
+          frames: utils.randomLoadingFrames(),
+        ),
+      ),
+    );
   }
 }
 

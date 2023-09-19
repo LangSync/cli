@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:langsync/src/command_runner.dart';
 import 'package:langsync/src/commands/commands.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/version.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:mocktail/mocktail.dart';
@@ -55,7 +56,7 @@ void main() {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      when(() => logger.progress(any())).thenReturn(progress);
+      when(() => logger.customProgress(any())).thenReturn(progress);
       when(() => processResult.exitCode).thenReturn(ExitCode.success.code);
     });
 
@@ -72,7 +73,7 @@ void main() {
         ).thenThrow(Exception('oops'));
         final result = await commandRunner.run(['update']);
         expect(result, equals(ExitCode.software.code));
-        verify(() => logger.progress('Checking for updates')).called(1);
+        verify(() => logger.customProgress('Checking for updates')).called(1);
         verify(() => logger.err('Exception: oops'));
         verifyNever(
           () => pubUpdater.update(
@@ -97,7 +98,7 @@ void main() {
         ).thenThrow(Exception('oops'));
         final result = await commandRunner.run(['update']);
         expect(result, equals(ExitCode.software.code));
-        verify(() => logger.progress('Checking for updates')).called(1);
+        verify(() => logger.customProgress('Checking for updates')).called(1);
         verify(() => logger.err('Exception: oops'));
         verify(
           () => pubUpdater.update(
@@ -127,7 +128,7 @@ void main() {
       final result = await commandRunner.run(['update']);
 
       expect(result, equals(ExitCode.software.code));
-      verify(() => logger.progress('Checking for updates')).called(1);
+      verify(() => logger.customProgress('Checking for updates')).called(1);
       verify(() => logger.err('Error updating CLI: $error'));
       verify(
         () => pubUpdater.update(
@@ -149,11 +150,12 @@ void main() {
             versionConstraint: any(named: 'versionConstraint'),
           ),
         ).thenAnswer((_) async => processResult);
-        when(() => logger.progress(any())).thenReturn(_MockProgress());
+        when(() => logger.customProgress(any())).thenReturn(_MockProgress());
         final result = await commandRunner.run(['update']);
         expect(result, equals(ExitCode.success.code));
-        verify(() => logger.progress('Checking for updates')).called(1);
-        verify(() => logger.progress('Updating to $latestVersion')).called(1);
+        verify(() => logger.customProgress('Checking for updates')).called(1);
+        verify(() => logger.customProgress('Updating to $latestVersion'))
+            .called(1);
         verify(
           () => pubUpdater.update(
             packageName: packageName,
@@ -169,13 +171,13 @@ void main() {
         when(
           () => pubUpdater.getLatestVersion(any()),
         ).thenAnswer((_) async => packageVersion);
-        when(() => logger.progress(any())).thenReturn(_MockProgress());
+        when(() => logger.customProgress(any())).thenReturn(_MockProgress());
         final result = await commandRunner.run(['update']);
         expect(result, equals(ExitCode.success.code));
         verify(
           () => logger.info('CLI is already at the latest version.'),
         ).called(1);
-        verifyNever(() => logger.progress('Updating to $latestVersion'));
+        verifyNever(() => logger.customProgress('Updating to $latestVersion'));
         verifyNever(
           () => pubUpdater.update(
             packageName: any(named: 'packageName'),

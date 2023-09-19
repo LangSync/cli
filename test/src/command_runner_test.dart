@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:cli_completion/cli_completion.dart';
 import 'package:langsync/src/command_runner.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/version.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:mocktail/mocktail.dart';
@@ -19,7 +20,8 @@ class _MockPubUpdater extends Mock implements PubUpdater {}
 
 const latestVersion = '0.0.0';
 
-final updatePrompt = '''
+final updatePrompt =
+    '''
 ${lightYellow.wrap('Update available!')} ${lightCyan.wrap(packageVersion)} \u2192 ${lightCyan.wrap(latestVersion)}
 Run ${lightCyan.wrap('$executableName update')} to update''';
 
@@ -95,7 +97,7 @@ void main() {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      when(() => logger.progress(any())).thenReturn(progress);
+      when(() => logger.customProgress(any())).thenReturn(progress);
 
       final result = await commandRunner.run(['update']);
       expect(result, equals(ExitCode.success.code));

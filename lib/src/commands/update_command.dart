@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:langsync/src/command_runner.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/version.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
@@ -30,7 +31,7 @@ class UpdateCommand extends Command<int> {
 
   @override
   Future<int> run() async {
-    final updateCheckProgress = _logger.progress('Checking for updates');
+    final updateCheckProgress = _logger.customProgress('Checking for updates');
     late final String latestVersion;
     try {
       latestVersion = await _pubUpdater.getLatestVersion(packageName);
@@ -47,7 +48,7 @@ class UpdateCommand extends Command<int> {
       return ExitCode.success.code;
     }
 
-    final updateProgress = _logger.progress('Updating to $latestVersion');
+    final updateProgress = _logger.customProgress('Updating to $latestVersion');
 
     late final ProcessResult result;
     try {

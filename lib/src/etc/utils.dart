@@ -19,7 +19,8 @@ class Utils {
     required String apiKey,
     required Logger logger,
   }) async {
-    final apiKeyCheckProgress = logger.progress('starting api key check..');
+    final apiKeyCheckProgress =
+        logger.customProgress('starting api key check..');
 
     try {
       final doesApiKeyExistsForSomeUser =
@@ -28,11 +29,11 @@ class Utils {
       );
 
       return doesApiKeyExistsForSomeUser;
-    } catch (e) {
+    } catch (e, stacktrace) {
       logger.customErr(
         progress: apiKeyCheckProgress,
         update: '',
-        error: e,
+        error: stacktrace,
       );
 
       return false;

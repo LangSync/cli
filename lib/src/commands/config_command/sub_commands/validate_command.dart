@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:args/command_runner.dart';
 import 'package:langsync/src/etc/controllers/yaml.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 class ConfigValidateCommand extends Command<int> {
@@ -28,7 +29,7 @@ class ConfigValidateCommand extends Command<int> {
     }
 
     final validationProgress =
-        logger.progress('Validating the existent langsync.yaml file...');
+        logger.customProgress('Validating the existent langsync.yaml file...');
 
     final yamlMap = await YamlController.parsedYaml;
 

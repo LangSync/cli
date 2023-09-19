@@ -46,7 +46,8 @@ class ConfigCreateCommand extends Command<int> {
     final toL = userAnswer.toLowerCase();
 
     if (toL == 'y' || toL == 'yes' || toL == 'yep' || toL == 'yeah') {
-      final deleteLogger = logger.progress('Deleting langsync.yaml file...');
+      final deleteLogger =
+          logger.customProgress('Deleting langsync.yaml file...');
       await file.delete();
       deleteLogger.complete('The already existing langsync.yaml file deleted.');
       await run();
@@ -101,7 +102,8 @@ class ConfigCreateCommand extends Command<int> {
       targetLangsList: targetLangsList,
     );
 
-    final creationProgress = logger.progress('Creating langsync.yaml file...');
+    final creationProgress =
+        logger.customProgress('Creating langsync.yaml file...');
     try {
       await YamlController.createConfigFile();
 

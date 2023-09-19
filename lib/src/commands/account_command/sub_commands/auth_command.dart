@@ -30,7 +30,8 @@ class AuthCommand extends Command<int> {
     if (utils.isValidApiKeyFormatted(apiKey)) {
       final configBox = Hive.box<dynamic>('config');
 
-      final savingProgress = logger.progress('Your API key is being saved..');
+      final savingProgress =
+          logger.customProgress('Your API key is being saved..');
 
       try {
         if (configBox.get('apiKey') != null) {

@@ -19,18 +19,16 @@ class LogoutCommand extends Command<int> {
   @override
   Future<int> run() async {
     final configBox = Hive.box<dynamic>('config');
+
     final apiKey = configBox.get('apiKey') as String?;
+
     if (apiKey == null) {
-      logger
-        ..info('No account was associated with the CLI.')
-        ..info(
-          'if you intend to authenticate with an account, run the following command:',
-        )
-        ..info('langsync account auth');
+      logger.info('No account was associated with the CLI.');
 
       return ExitCode.success.code;
     } else {
-      final logoutProgress = logger.progress('Logging out from the account..');
+      final logoutProgress =
+          logger.customProgress('Logging out from the account..');
 
       try {
         await configBox.delete('apiKey');

@@ -29,13 +29,13 @@ class InfoCommand extends Command<int> {
   @override
   FutureOr<int>? run() async {
     final configBox = Hive.box<dynamic>('config');
+
     final apiKey = configBox.get('apiKey') as String?;
+
     if (apiKey == null) {
-      logger
-        ..info(
-          'You are not authenticated, please authenticate your account with the CLI by running: ',
-        )
-        ..info('langsync account auth');
+      logger.info(
+        'You are not authenticated, please provide an API key to authenticate, see Docs',
+      );
 
       return ExitCode.usage.code;
     }
@@ -44,18 +44,15 @@ class InfoCommand extends Command<int> {
 
     final shownApiKey = shouldRevealApiKey ? apiKey : apiKey.hiddenBy('*');
 
-    final fetchingProgress = logger.progress(
+    final fetchingProgress = logger.customProgress(
       "Fetching account's information...",
-      options: ProgressOptions(
-        animation: ProgressAnimation(
-          frames: utils.randomLoadingFrames(),
-        ),
-      ),
     );
 
     try {
       final userInfo = await NetClient.instance.userInfo(apiKey: apiKey);
-      fetchingProgress.update("fetched account's information successfully.");
+
+      fetchingProgress.complete("fetched account's information successfully.");
+
       logger
         ..info('')
         ..info('The API key in use: $shownApiKey');
@@ -66,8 +63,6 @@ class InfoCommand extends Command<int> {
         final curr = fields[index];
         logger.info('${curr.key}: ${curr.value}');
       }
-
-      fetchingProgress.complete();
 
       return ExitCode.success.code;
     } catch (e) {

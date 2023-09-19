@@ -60,9 +60,7 @@ extension LoggerExt on Logger {
   }) {
     const isDebugMode = bool.fromEnvironment('DEBUG');
 
-    return isDebugMode
-        ? progress.fail(error.toString())
-        : progress.fail(update);
+    return true ? progress.fail(error.toString()) : progress.fail(update);
   }
 }
 

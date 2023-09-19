@@ -59,9 +59,15 @@ abstract class YamlController {
     iterateOverConfig(
       config,
       callback: (entry) async {
-        await YamlController.writeToConfigFile(
-          "\n  ${entry.key}: '${entry.value}' \n",
-        );
+        if (entry.value is String) {
+          await YamlController.writeToConfigFile(
+            "\n  ${entry.key}: '${entry.value}' \n",
+          );
+        } else if (entry.value is List) {
+          await YamlController.writeToConfigFile(
+            '\n  ${entry.key}: ${entry.value} \n',
+          );
+        }
       },
     );
   }

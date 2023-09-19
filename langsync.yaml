@@ -1,6 +1,7 @@
 langsync:
-  source: "./example/locales/en.json"
 
-  output: "./example/locales/"
+  source: './example/locales/en.json' 
 
-  target: [arabix, german]
+  output: './example/locales' 
+
+  target: [ge, zh, es] 

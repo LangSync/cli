@@ -76,7 +76,7 @@ class StartCommand extends Command<int> {
           .update('Your source file has been saved succesfully.');
 
       logger.info(
-        'The ID of this operation is: ${jsonPartitionRes.partitionId}',
+        '\n The ID of this operation is: ${jsonPartitionRes.partitionId}',
       );
 
       localizationProgress.update('Starting localization & translation..');
@@ -146,7 +146,10 @@ class StartCommand extends Command<int> {
       final file = File('${outputDir.path}/$fileName');
 
       await file.create();
-      await file.writeAsString(jsonEncode(current.jsonFormattedResponse));
+      await file.writeAsString(
+        const JsonEncoder.withIndent('   ')
+            .convert(current.jsonFormattedResponse),
+      );
       logger.info('file $fileName is created succesfully, ');
     }
 

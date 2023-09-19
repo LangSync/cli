@@ -41,9 +41,17 @@ class NetClient {
     T Function(Map<String, dynamic> res) onSuccess,
   ) async {
     final uri = Uri.parse(utils.endpoint(endpoint));
+
     final request = http.Request(method, uri);
 
-    request.headers.addAll({...headers});
+    request.headers.addAll({
+      ...headers,
+      'Content-Type': 'application/json',
+    });
+
+    // include body in request.
+
+    request.body = json.encode(body);
 
     final res = await request.send();
     final asBytes = await res.stream.bytesToString();
@@ -93,7 +101,7 @@ class NetClient {
       'POST',
       {'Authorization': 'Bearer $apiKey'},
       {
-        'jsonPartitionId': jsonPartitionId,
+        'jsonPartitionsId': jsonPartitionId,
         'langs': asConfig.langs.toList(),
         'includeOutput': includeOutput,
       },
@@ -142,9 +150,15 @@ class NetClient {
       "/get-partitioned-json-of-user",
       "GET",
       {},
-      {},
+      {
+        "jsonPartitionsId": outputPartitionId,
+      },
       (res) {
-        final output = res["output"] as List<Map<String, dynamic>>;
+        print(res);
+        final output = (res["output"] as List)
+            .map((e) => e as Map<String, dynamic>)
+            .toList();
+
         final modelled = output.map(LangOutput.fromJson).toList();
 
         return modelled;

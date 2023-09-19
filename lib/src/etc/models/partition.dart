@@ -9,8 +9,6 @@ class PartitionResponse extends Equatable {
   });
 
   factory PartitionResponse.fromJson(Map<String, dynamic> json) {
-    print(json);
-
     return PartitionResponse(
       partitionId: json['partitionId'] as String,
     );

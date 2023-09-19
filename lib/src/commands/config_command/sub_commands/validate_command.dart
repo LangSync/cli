@@ -29,7 +29,7 @@ class ConfigValidateCommand extends Command<int> {
     }
 
     final validationProgress =
-        logger.customProgress('Validating the existent langsync.yaml file...');
+        logger.customProgress('Validating the existent langsync.yaml file');
 
     final yamlMap = await YamlController.parsedYaml;
 
@@ -42,10 +42,10 @@ class ConfigValidateCommand extends Command<int> {
 
       return ExitCode.software.code;
     } else {
-      validationProgress.update('Parsing the configuration file...');
+      validationProgress.update('Parsing the configuration file');
 
       final parsedYaml = await YamlController.parsedYaml;
-      validationProgress.update('Validating the configuration file...');
+      validationProgress.update('Validating the configuration file');
 
       final isValid = YamlController.validateConfigFields(parsedYaml);
 

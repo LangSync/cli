@@ -5,6 +5,8 @@ import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/utils.dart';
 import 'package:mason_logger/mason_logger.dart';
 
+final randomframesToUse = utils.randomLoadingFrames();
+
 extension IterableExtension<T> on String {
   String hiddenBy(String hideChar) {
     if (contains('-')) {
@@ -69,7 +71,7 @@ extension LoggerExt on Logger {
       message,
       options: ProgressOptions(
         animation: ProgressAnimation(
-          frames: utils.randomLoadingFrames(),
+          frames: randomframesToUse,
         ),
       ),
     );

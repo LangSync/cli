@@ -154,7 +154,6 @@ class NetClient {
         "jsonPartitionsId": outputPartitionId,
       },
       (res) {
-        print(res);
         final output = (res["output"] as List)
             .map((e) => e as Map<String, dynamic>)
             .toList();

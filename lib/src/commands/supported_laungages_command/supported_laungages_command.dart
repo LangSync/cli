@@ -83,7 +83,7 @@ class SupportedLangsCommand extends Command<int> {
     }
 
     try {
-      prog.update('Checking language $lang support...');
+      prog.update('Checking language $lang support');
 
       final isSupported = await NetClient.instance.supportsLang(lang);
       if (isSupported) {
@@ -120,6 +120,6 @@ class SupportedLangsCommand extends Command<int> {
   }
 
   Progress _progressFor(String lang) {
-    return logger.customProgress('Checking language $lang support...');
+    return logger.customProgress('Checking language $lang support');
   }
 }

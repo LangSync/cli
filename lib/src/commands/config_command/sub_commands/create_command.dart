@@ -47,7 +47,7 @@ class ConfigCreateCommand extends Command<int> {
 
     if (utils.isConsideredTrue(toL)) {
       final deleteLogger =
-          logger.customProgress('Deleting the existant langsync.yaml file...');
+          logger.customProgress('Deleting the existant langsync.yaml file');
 
       await file.delete();
 
@@ -56,7 +56,7 @@ class ConfigCreateCommand extends Command<int> {
 
       return run();
     } else {
-      logger.info('Aborting...');
+      logger.info('Aborting');
 
       return ExitCode.success.code;
     }
@@ -91,7 +91,7 @@ class ConfigCreateCommand extends Command<int> {
 
       if (utils.isConsideredTrue(toL)) {
         final createDirProgress =
-            logger.customProgress('Creating the output directory...');
+            logger.customProgress('Creating the output directory');
 
         await outputDirectory.create(recursive: true);
 
@@ -99,7 +99,7 @@ class ConfigCreateCommand extends Command<int> {
           'The output directory is created successfully.',
         );
       } else {
-        logger.info('Aborting...');
+        logger.info('Aborting');
         return ExitCode.success.code;
       }
     }
@@ -129,7 +129,7 @@ class ConfigCreateCommand extends Command<int> {
     );
 
     final creationProgress =
-        logger.customProgress('Creating langsync.yaml file...');
+        logger.customProgress('Creating langsync.yaml file');
 
     try {
       await YamlController.createConfigFile();

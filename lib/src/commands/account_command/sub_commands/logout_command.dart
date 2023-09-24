@@ -27,6 +27,16 @@ class LogoutCommand extends Command<int> {
 
       return ExitCode.success.code;
     } else {
+      final confirm = await logger.confirm(
+        'Are you sure you want to logout from the current account?',
+      );
+
+      if (!confirm) {
+        logger.info('Logout aborted.');
+
+        return ExitCode.success.code;
+      }
+
       final logoutProgress =
           logger.customProgress('Logging out from the account..');
 

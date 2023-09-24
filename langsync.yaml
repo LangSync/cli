@@ -4,4 +4,4 @@ langsync:
 
   output: './example/locales' 
 
-  target: [ge, zh, es] 
+  target: [fr, de, ar, de, zh] 

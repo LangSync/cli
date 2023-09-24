@@ -81,7 +81,7 @@ class StartCommand extends Command<int> {
       );
 
       savingSourceFileProgress
-          .complete('Your source file has been saved succesfully.');
+          .complete('Your source file has been saved successfully.');
 
       logger
             // ..info("\n")
@@ -176,9 +176,9 @@ class StartCommand extends Command<int> {
             .convert(current.jsonFormattedResponse),
       );
 
-      progress.complete('file $fileName is created succesfully, ${file.path}');
+      progress.complete('file $fileName is created successfully, ${file.path}');
     }
 
-    logger.success('All files are created succesfully.');
+    logger.success('All files are created successfully.');
   }
 }

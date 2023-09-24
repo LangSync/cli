@@ -41,18 +41,16 @@ class ConfigCreateCommand extends Command<int> {
   }
 
   Future<int> _requestToOverwrite(File file) async {
-    final userAnswer = logger.prompt('Do you want to overwrite it? (Y/n)');
+    final confirmOverwrite = logger.confirm('Do you want to overwrite it?');
 
-    final toL = userAnswer.toLowerCase();
-
-    if (utils.isConsideredTrue(toL)) {
+    if (confirmOverwrite) {
       final deleteLogger =
           logger.customProgress('Deleting the existant langsync.yaml file');
 
       await file.delete();
 
       deleteLogger.complete(
-          'The already existing langsync.yaml file is deleted succesfully');
+          'The already existing langsync.yaml file is deleted successfully');
 
       return run();
     } else {
@@ -84,12 +82,11 @@ class ConfigCreateCommand extends Command<int> {
     final outputDirectory = Directory(outputDir);
 
     if (!outputDirectory.existsSync()) {
-      final createDirAnswer = logger.prompt(
+      final confirmOverwrite = logger.confirm(
         '''The output directory at $outputDir does not exist, do you want to create it? (Y/n)''',
       );
-      final toL = createDirAnswer.toLowerCase();
 
-      if (utils.isConsideredTrue(toL)) {
+      if (confirmOverwrite) {
         final createDirProgress =
             logger.customProgress('Creating the output directory');
 
@@ -143,7 +140,7 @@ class ConfigCreateCommand extends Command<int> {
       await YamlController.iterateAndWriteToConfigFile(config);
 
       creationProgress.complete(
-        'langsync.yaml file created & updated with your config succesfully.',
+        'langsync.yaml file created & updated with your config successfully.',
       );
 
       return ExitCode.success.code;

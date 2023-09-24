@@ -59,7 +59,7 @@ class Utils {
   }
 
   String endpoint(String path) {
-    return 'http://192.168.1.103:5559${path.startsWith("/") ? path : "/$path"}';
+    return 'http://192.168.0.3:5559${path.startsWith("/") ? path : "/$path"}';
   }
 
   List<String> randomLoadingFrames() {
@@ -91,11 +91,11 @@ class Utils {
     });
   }
 
-  bool isConsideredTrue(String answer) {
-    return answer == 'y' ||
-        answer == 'yes' ||
-        answer == 'yep' ||
-        answer == 'yeah' ||
-        answer == 'true';
-  }
+  // bool isConsideredTrue(String answer) {
+  //   return answer == 'y' ||
+  //       answer == 'yes' ||
+  //       answer == 'yep' ||
+  //       answer == 'yeah' ||
+  //       answer == 'true';
+  // }
 }

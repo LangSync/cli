@@ -27,9 +27,20 @@ class NetClient {
     });
   }
 
-  Future<bool> supportsLang(String lang) {
-    return _makeRes<bool>('langs/$lang', 'GET', {}, {}, (res) {
-      return res['isSupported'] as bool;
+  Future<Map<String, bool>> supportsLang(List<String> lang) {
+    return _makeRes<Map<String, bool>>('/langs-support', 'POST', {}, {
+      'langs': lang,
+    }, (res) {
+      final map = <String, bool>{};
+      print(res);
+
+      final list = (res['checkResultList'] as List<dynamic>).cast<String>();
+
+      for (final element in list) {
+        map[element] = true;
+      }
+
+      return map;
     });
   }
 
@@ -56,7 +67,13 @@ class NetClient {
     final res = await request.send();
     final asBytes = await res.stream.bytesToString();
 
-    return onSuccess(jsonDecode(asBytes) as Map<String, dynamic>);
+    final decoded = jsonDecode(asBytes) as Map<String, dynamic>;
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return onSuccess(decoded);
+    } else {
+      throw Exception(decoded);
+    }
   }
 
   Future<T> _makeMultiPartRes<T>(

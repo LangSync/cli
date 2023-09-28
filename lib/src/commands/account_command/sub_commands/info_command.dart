@@ -65,7 +65,9 @@ class InfoCommand extends Command<int> {
       }
 
       return ExitCode.success.code;
-    } catch (e) {
+    } catch (e, s) {
+      print(s);
+
       logger.customErr(
         error: e,
         progress: fetchingProgress,

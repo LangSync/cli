@@ -1,7 +1,0 @@
-langsync:
-
-  source: './example/locales/en.json' 
-
-  output: './example/locales' 
-
-  target: [fr, de, ar, de, zh] 

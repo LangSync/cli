@@ -5,8 +5,6 @@ import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
 
-// TODO: openai offers 3 requests/min.
-
 class SupportedLangsCommand extends Command<int> {
   SupportedLangsCommand({
     required this.logger,

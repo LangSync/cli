@@ -50,7 +50,7 @@ class LangsyncCommandRunner extends CompletionCommandRunner<int> {
     addCommand(AccountCommand(logger: _logger));
     addCommand(ConfigCommand(logger: _logger));
     addCommand(SupportedLangsCommand(logger: _logger));
-    addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
+    // addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
     addCommand(StartCommand(logger: _logger));
   }
 
@@ -124,10 +124,10 @@ class LangsyncCommandRunner extends CompletionCommandRunner<int> {
       exitCode = await super.runCommand(topLevelResults);
     }
 
-    // Check for updates
-    if (topLevelResults.command?.name != UpdateCommand.commandName) {
-      await _checkForUpdates();
-    }
+    // // Check for updates
+    // if (topLevelResults.command?.name != UpdateCommand.commandName) {
+    //   await _checkForUpdates();
+    // }
 
     return exitCode;
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:langsync/src/etc/models/api_key_res.dart';
 import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/models/partition.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
@@ -32,7 +33,6 @@ class NetClient {
       'langs': lang,
     }, (res) {
       final map = <String, bool>{};
-      print(res);
 
       final list = (res['checkResultList'] as List<dynamic>).cast<String>();
 
@@ -180,5 +180,13 @@ class NetClient {
         return modelled;
       },
     );
+  }
+
+  Future<APIKeyResponse> createApiKey(String userName) {
+    return _makeRes('/create-account-with-api-key-beta', 'POST', {}, {
+      'username': userName,
+    }, (res) {
+      return APIKeyResponse.fromJson(res);
+    });
   }
 }

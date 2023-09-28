@@ -75,8 +75,6 @@ abstract class YamlController {
   static bool validateConfigFields(Map parsedYaml) {
     final langsyncConfig = parsedYaml['langsync'];
 
-    //  TODO: validate source file and output dir.
-
     if (langsyncConfig == null) {
       throw Exception('langsync.yaml file is missing a `langsync` key.');
     } else {
@@ -90,7 +88,9 @@ abstract class YamlController {
         throw Exception(
           'langsync.yaml file is missing a `source` key under `langsync`.',
         );
-      } else if (outputDir == null) {
+      }
+
+      if (outputDir == null) {
         throw Exception(
           'langsync.yaml file is missing a `output` key under `langsync`.',
         );

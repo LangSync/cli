@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:langsync/src/etc/models/config.dart';
@@ -61,9 +62,13 @@ extension LoggerExt on Logger {
     required String update,
     required Object error,
   }) {
-    const isDebugMode = bool.fromEnvironment('DEBUG');
+    const isDebugMode = false;
 
-    return true ? progress.fail(error.toString()) : progress.fail(update);
+    if (isDebugMode) {
+      progress.fail(error.toString());
+    } else {
+      progress.fail(update);
+    }
   }
 
   Progress customProgress(String message) {

@@ -13,8 +13,6 @@ class UserInfo extends Equatable {
   factory UserInfo.fromJson(Map<String, dynamic> json) {
     final userJson = json['user'];
 
-    print(userJson['localizationDocs'].runtimeType);
-
     return UserInfo(
       userId: userJson['userId'] as String,
       createdAt: DateTime.parse(userJson['createdAt'] as String),

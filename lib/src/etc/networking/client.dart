@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:langsync/src/command_runner.dart';
 import 'package:langsync/src/etc/models/api_key_res.dart';
 import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/models/partition.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
 import 'package:langsync/src/etc/models/user_info.dart';
 import 'package:langsync/src/etc/utils.dart';
+import 'package:langsync/src/version.dart';
 
 import '../models/lang_output.dart';
 
@@ -188,5 +190,28 @@ class NetClient {
     }, (res) {
       return APIKeyResponse.fromJson(res);
     });
+  }
+
+  Future<void> logException({
+    required Object e,
+    required StackTrace stacktrace,
+    required String commandName,
+    String? processId,
+  }) {
+    return _makeRes(
+      '/log-exception',
+      'POST',
+      {},
+      {
+        'exception': e.toString(),
+        'stacktrace': stacktrace.toString(),
+        'platform': Platform.operatingSystem,
+        'langsyncVersion': packageVersion,
+        'Date': DateTime.now().toIso8601String(),
+        'processId': processId,
+        'commandName': commandName,
+      },
+      (res) {},
+    );
   }
 }

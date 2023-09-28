@@ -58,12 +58,24 @@ class StartCommand extends Command<int> {
       YamlController.validateConfigFields(parsedYaml);
       configFilesValidationProgress
           .complete('Your langsync.yaml file and configuration are valid.');
-    } catch (e) {
+    } catch (e, stacktrace) {
       logger.customErr(
         progress: configFilesValidationProgress,
         update: 'Something went wrong while validating your config file.',
         error: e,
       );
+
+      try {
+        await NetClient.instance.logException(
+          e: e,
+          stacktrace: stacktrace,
+          commandName: name,
+        );
+
+        logger.warn(
+          '\nThis error has been reported to the LangSync team, we will definitely look into it!',
+        );
+      } catch (e) {}
 
       return ExitCode.config.code;
     }

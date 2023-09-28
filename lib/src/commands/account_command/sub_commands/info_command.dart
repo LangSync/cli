@@ -65,14 +65,24 @@ class InfoCommand extends Command<int> {
       }
 
       return ExitCode.success.code;
-    } catch (e, s) {
-      print(s);
-
+    } catch (e, stacktrace) {
       logger.customErr(
         error: e,
         progress: fetchingProgress,
         update: 'Failed to fetch account information.',
       );
+
+      try {
+        await NetClient.instance.logException(
+          e: e,
+          stacktrace: stacktrace,
+          commandName: name,
+        );
+
+        logger.warn(
+          '\nThis error has been reported to the LangSync team, we will definitely look into it!',
+        );
+      } catch (e) {}
 
       return ExitCode.software.code;
     }

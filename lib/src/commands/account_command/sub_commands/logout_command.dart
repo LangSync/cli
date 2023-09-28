@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:hive/hive.dart';
 import 'package:langsync/src/etc/extensions.dart';
+import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 class LogoutCommand extends Command<int> {
@@ -45,12 +46,24 @@ class LogoutCommand extends Command<int> {
         logoutProgress.complete('Successfully logged out.');
 
         return ExitCode.success.code;
-      } catch (e) {
+      } catch (e, stacktrace) {
         logger.customErr(
           error: e,
           progress: logoutProgress,
           update: 'Something went wrong while logging out, please try again.',
         );
+
+        try {
+          await NetClient.instance.logException(
+            e: e,
+            stacktrace: stacktrace,
+            commandName: name,
+          );
+
+          logger.warn(
+            '\nThis error has been reported to the LangSync team, we will definitely look into it!',
+          );
+        } catch (e) {}
 
         return ExitCode.ioError.code;
       }

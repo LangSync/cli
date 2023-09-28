@@ -58,12 +58,24 @@ class ApiKeyCommand extends Command<int> {
         );
 
       return ExitCode.success.code;
-    } catch (e) {
+    } catch (e, stacktrace) {
       logger.customErr(
         progress: progress,
         update: 'Failed to create API key!',
         error: e,
       );
+
+      try {
+        await NetClient.instance.logException(
+          e: e,
+          stacktrace: stacktrace,
+          commandName: name,
+        );
+
+        logger.warn(
+          '\nThis error has been reported to the LangSync team, we will definitely look into it!',
+        );
+      } catch (e) {}
 
       return ExitCode.software.code;
     }

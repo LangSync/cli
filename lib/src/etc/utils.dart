@@ -59,7 +59,7 @@ class Utils {
   }
 
   String endpoint(String path) {
-    return 'http://192.168.0.3:5559${path.startsWith("/") ? path : "/$path"}';
+    return 'https://api.langsync.app${path.startsWith("/") ? path : "/$path"}';
   }
 
   List<String> randomLoadingFrames() {

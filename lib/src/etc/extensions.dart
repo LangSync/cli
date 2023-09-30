@@ -62,7 +62,7 @@ extension LoggerExt on Logger {
     required String update,
     required Object error,
   }) {
-    const isDebugMode = false;
+    const isDebugMode = true;
 
     if (isDebugMode) {
       progress.fail(error.toString());

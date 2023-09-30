@@ -131,6 +131,7 @@ class StartCommand extends Command<int> {
       await _writeNewLocalizationFiles(
         outputList: outputList,
         outputDir: Directory(asConfig.outputDir),
+        partitionId: jsonPartitionRes.partitionId,
       );
 
       logger.success('All done!');
@@ -173,24 +174,60 @@ class StartCommand extends Command<int> {
   Future<void> _writeNewLocalizationFiles({
     required List<LangOutput> outputList,
     required Directory outputDir,
+    required String partitionId,
   }) async {
     for (var index = 0; index < outputList.length; index++) {
       final current = outputList[index];
-      final fileName = '${current.lang}.json';
 
-      final progress = logger.customProgress('creating $fileName..');
+      final isError = current.jsonFormattedResponse['error'] != null;
+      if (isError) {
+        final fileName = '${current.lang}.error.json';
 
-      final file = File('${outputDir.path}/$fileName');
+        logger.err(
+          'An error occurred while localizing to ${current.lang} file, see $fileName for more details.',
+        );
 
-      await file.create();
-      await file.writeAsString(
-        const JsonEncoder.withIndent('   ')
-            .convert(current.jsonFormattedResponse),
-      );
+        final progress = logger.progress(
+          'Creating error file ${current.lang}.error.json file..',
+        );
 
-      progress.complete('file $fileName is created successfully, ${file.path}');
+        final file = File('${outputDir.path}/$fileName');
+
+        await file.create();
+
+        await file.writeAsString(
+          const JsonEncoder.withIndent('   ').convert(
+            {
+              ...current.jsonFormattedResponse,
+              'partitionId': partitionId,
+              'lang': current.lang,
+              'LocalizationTryDate': current.localizedAt,
+              'message':
+                  'if you need guide on this, please contact us with the content of this file.',
+            },
+          ),
+        );
+
+        progress.complete(
+          'file $fileName is created successfully, ${file.path}',
+        );
+      } else {
+        final fileName = '${current.lang}.json';
+        final progress = logger.customProgress('creating $fileName..');
+
+        final file = File('${outputDir.path}/$fileName');
+
+        await file.create();
+        await file.writeAsString(
+          const JsonEncoder.withIndent('   ')
+              .convert(current.jsonFormattedResponse),
+        );
+
+        progress
+            .complete('file $fileName is created successfully, ${file.path}');
+      }
+
+      logger.success('All files are created successfully.');
     }
-
-    logger.success('All files are created successfully.');
   }
 }

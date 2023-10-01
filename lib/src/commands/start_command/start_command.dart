@@ -86,6 +86,8 @@ class StartCommand extends Command<int> {
       'Saving your source file at ${asConfig.sourceFile}..',
     );
 
+    late Progress localizationProgress;
+
     try {
       final jsonPartitionRes = await NetClient.instance.savePartitionsJson(
         apiKey: apiKey,
@@ -103,7 +105,7 @@ class StartCommand extends Command<int> {
           // ..info("\n")
           ;
 
-      final localizationProgress = logger.customProgress(
+      localizationProgress = logger.customProgress(
         'Starting localization & translation to your target languages..',
       );
 
@@ -138,15 +140,23 @@ class StartCommand extends Command<int> {
 
       return ExitCode.success.code;
     } catch (e, stacktrace) {
-      logger.err(
-        'Something went wrong while starting localization',
+      logger.customErr(
+        error: e,
+        progress: localizationProgress,
+        update: 'Something went wrong, try again!',
       );
 
-      //   logger.customErr(
-      //     progress: localizationProgress,
-      //     update: 'Something went wrong while starting localization',
-      //     error: stacktrace,
-      //   );
+      try {
+        await NetClient.instance.logException(
+          e: e,
+          stacktrace: stacktrace,
+          commandName: name,
+        );
+
+        logger.warn(
+          '\nThis error has been reported to the LangSync team, we will definitely look into it!',
+        );
+      } catch (e) {}
 
       return ExitCode.software.code;
     }

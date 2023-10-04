@@ -48,6 +48,7 @@ class StartCommand extends Command<int> {
 
       return ExitCode.config.code;
     }
+
     configFilesValidationProgress.update('Parsing langsync.yaml file..');
 
     final parsedYaml = await YamlController.parsedYaml;
@@ -72,9 +73,11 @@ class StartCommand extends Command<int> {
           commandName: name,
         );
 
-        logger.warn(
-          '\nThis error has been reported to the LangSync team, we will definitely look into it!',
-        );
+        logger
+          ..info('\n')
+          ..warn(
+            'This error has been reported to the LangSync team, we will definitely look into it!',
+          );
       } catch (e) {}
 
       return ExitCode.config.code;
@@ -98,7 +101,7 @@ class StartCommand extends Command<int> {
           .complete('Your source file has been saved successfully.');
 
       logger
-            // ..info("\n")
+            ..info('\n')
             ..warn(
               'The ID of this operation is: ${jsonPartitionRes.partitionId}. in case of any issues, please contact us providing this ID so we can help.',
             )
@@ -119,11 +122,11 @@ class StartCommand extends Command<int> {
         'Localization operation is completed successfully.',
       );
 
-      logger.info('\n');
-
-      logger.info(
-        'Generating localization files: ${asConfig.langsJsonFiles.join(", ")}:',
-      );
+      logger
+        ..info('\n')
+        ..info(
+          'Generating localization files: ${asConfig.langsJsonFiles.join(", ")}.',
+        );
 
       final outputList =
           await NetClient.instance.retrieveJsonPartitionWithOutput(
@@ -153,9 +156,11 @@ class StartCommand extends Command<int> {
           commandName: name,
         );
 
-        logger.warn(
-          '\nThis error has been reported to the LangSync team, we will definitely look into it!',
-        );
+        logger
+          ..info('\n')
+          ..warn(
+            'This error has been reported to the LangSync team, we will definitely look into it!',
+          );
       } catch (e) {}
 
       return ExitCode.software.code;
@@ -190,6 +195,7 @@ class StartCommand extends Command<int> {
       final current = outputList[index];
 
       final isError = current.jsonFormattedResponse['error'] != null;
+
       if (isError) {
         final fileName = '${current.lang}.error.json';
 
@@ -208,18 +214,23 @@ class StartCommand extends Command<int> {
         await file.writeAsString(
           const JsonEncoder.withIndent('   ').convert(
             {
-              ...current.jsonFormattedResponse,
-              'partitionId': partitionId,
-              'lang': current.lang,
-              'LocalizationTryDate': current.localizedAt,
               'message':
-                  'if you need guide on this, please contact us with the content of this file.',
+                  'Please, if you think that this is an unexpected bug in LangSync, contact us so we can help',
+              'partitionId': partitionId,
+              'processedResponse': current.jsonFormattedResponse.toString(),
+              'target_language': current.lang,
+              'success_file_name': '${current.lang}.json',
+              'LocalizationTryDate': {
+                'human_readable_format': current.localizedAt.toHumanReadable(),
+                'ISO_8601_format': current.localizedAt.toIso8601String(),
+              },
+              'contact_link': 'https://langsync.app/#contact',
             },
           ),
         );
 
         progress.complete(
-          'file $fileName is created successfully, ${file.path}',
+          'file $fileName is created successfully, ${file.path.replaceAll("//", "/")}',
         );
       } else {
         final fileName = '${current.lang}.json';
@@ -233,11 +244,13 @@ class StartCommand extends Command<int> {
               .convert(current.jsonFormattedResponse),
         );
 
-        progress
-            .complete('file $fileName is created successfully, ${file.path}');
+        progress.complete(
+          'file $fileName is created successfully, ${file.path.replaceAll("//", "/")}',
+        );
       }
-
-      logger.success('All files are created successfully.');
     }
+    logger
+      ..info('\n')
+      ..success('All files are created successfully.');
   }
 }

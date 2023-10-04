@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:langsync/src/etc/models/config.dart';
@@ -62,7 +61,9 @@ extension LoggerExt on Logger {
     required String update,
     required Object error,
   }) {
-    const isDebugMode = true;
+    const isDebugMode = false;
+
+    info('\n');
 
     if (isDebugMode) {
       progress.fail(error.toString());
@@ -83,7 +84,7 @@ extension LoggerExt on Logger {
   }
 }
 
-extension MapExtension on Map {
+extension MapExtension on Map<dynamic, dynamic> {
   LangSyncConfig toConfigModeled() {
     return LangSyncConfig.fromMap(this);
   }
@@ -92,5 +93,11 @@ extension MapExtension on Map {
 extension JsonMapExtension on Map<String, dynamic> {
   String toPrettyJson() {
     return const JsonEncoder.withIndent('  ').convert(this);
+  }
+}
+
+extension DateExt on DateTime {
+  String toHumanReadable() {
+    return '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}/${year.toString().padLeft(2, '0')} ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:${second.toString().padLeft(2, '0')}';
   }
 }

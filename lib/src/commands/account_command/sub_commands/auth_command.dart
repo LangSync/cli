@@ -66,9 +66,11 @@ class AuthCommand extends Command<int> {
             commandName: name,
           );
 
-          logger.warn(
-            '\nThis error has been reported to the LangSync team, we will definitely look into it!',
-          );
+          logger
+            ..info('\n')
+            ..warn(
+              'This error has been reported to the LangSync team, we will definitely look into it!',
+            );
         } catch (e) {}
 
         return ExitCode.ioError.code;

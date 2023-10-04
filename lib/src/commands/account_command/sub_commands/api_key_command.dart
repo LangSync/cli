@@ -21,7 +21,8 @@ class ApiKeyCommand extends Command<int> {
   @override
   FutureOr<int>? run() async {
     final userSure = logger.confirm(
-        "You're about to create a brand new unique API key, do you want to continue?");
+      "You're about to create a brand new unique API key, do you want to continue?",
+    );
     if (!userSure) {
       logger.info('Aborted!');
       return 0;
@@ -30,7 +31,8 @@ class ApiKeyCommand extends Command<int> {
     logger.info('\n');
 
     final userName = logger.prompt(
-        'Please enter your desired username (will be used to identify you): ');
+      'Please enter your desired username (will be used to identify you): ',
+    );
 
     if (userName.isEmpty) {
       logger.err("Username can't be empty!");
@@ -72,9 +74,11 @@ class ApiKeyCommand extends Command<int> {
           commandName: name,
         );
 
-        logger.warn(
-          '\nThis error has been reported to the LangSync team, we will definitely look into it!',
-        );
+        logger
+          ..info('\n')
+          ..warn(
+            'This error has been reported to the LangSync team, we will definitely look into it!',
+          );
       } catch (e) {}
 
       return ExitCode.software.code;

@@ -5,7 +5,6 @@ import 'package:args/command_runner.dart';
 import 'package:langsync/src/etc/controllers/yaml.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/networking/client.dart';
-import 'package:langsync/src/etc/utils.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 class ConfigCreateCommand extends Command<int> {
@@ -160,8 +159,9 @@ class ConfigCreateCommand extends Command<int> {
           commandName: name,
         );
 
+        logger.info('\n');
         logger.warn(
-          '\nThis error has been reported to the LangSync team, we will definitely look into it!',
+          'This error has been reported to the LangSync team, we will definitely look into it!',
         );
       } catch (e) {}
 

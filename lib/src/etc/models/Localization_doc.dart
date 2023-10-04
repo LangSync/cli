@@ -8,19 +8,6 @@ class LocalizationDoc extends Equatable {
     this.outputLangs,
   });
 
-  final DateTime createdAt;
-  final String partitionId;
-  final int jsonPartsLength;
-  final List<String>? outputLangs;
-
-  @override
-  List<Object?> get props => [
-        createdAt,
-        partitionId,
-        jsonPartsLength,
-        outputLangs,
-      ];
-
   factory LocalizationDoc.fromJson(Map<String, dynamic> json) {
     return LocalizationDoc(
       createdAt: DateTime.parse(json['createdAt'] as String),
@@ -35,4 +22,17 @@ class LocalizationDoc extends Equatable {
           : null,
     );
   }
+
+  final DateTime createdAt;
+  final String partitionId;
+  final int jsonPartsLength;
+  final List<String>? outputLangs;
+
+  @override
+  List<Object?> get props => [
+        createdAt,
+        partitionId,
+        jsonPartsLength,
+        outputLangs,
+      ];
 }

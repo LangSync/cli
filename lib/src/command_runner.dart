@@ -8,12 +8,11 @@ import 'package:langsync/src/version.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 
-import 'commands/start_command/start_command.dart';
+import 'package:langsync/src/commands/start_command/start_command.dart';
 
 const executableName = 'langsync';
 const packageName = 'langsync';
-const description =
-    '''
+const description = '''
 
 An AI powered Command Line Interface (CLI) tool that helps you process your original language-specific files such translations, strings & texts.. and generates the corresponding translated files in the target language(s).
 

@@ -13,7 +13,7 @@ class LangSyncConfig extends Equatable {
   final String outputDir;
   final Iterable<String> langs;
 
-  List<String> get langsJsonFiles => langs.map((e) => "$e.json").toList();
+  List<String> get langsJsonFiles => langs.map((e) => '$e.json').toList();
 
   @override
   List<Object?> get props => [

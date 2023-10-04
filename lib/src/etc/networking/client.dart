@@ -2,16 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:langsync/src/command_runner.dart';
 import 'package:langsync/src/etc/models/api_key_res.dart';
 import 'package:langsync/src/etc/models/config.dart';
+import 'package:langsync/src/etc/models/lang_output.dart';
 import 'package:langsync/src/etc/models/partition.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
 import 'package:langsync/src/etc/models/user_info.dart';
 import 'package:langsync/src/etc/utils.dart';
 import 'package:langsync/src/version.dart';
-
-import '../models/lang_output.dart';
 
 class NetClient {
   NetClient._();
@@ -166,14 +164,14 @@ class NetClient {
     required String outputPartitionId,
   }) {
     return _makeRes(
-      "/get-partitioned-json-of-user",
-      "GET",
+      '/get-partitioned-json-of-user',
+      'GET',
       {},
       {
-        "jsonPartitionsId": outputPartitionId,
+        'jsonPartitionsId': outputPartitionId,
       },
       (res) {
-        final output = (res["output"] as List)
+        final output = (res['output'] as List)
             .map((e) => e as Map<String, dynamic>)
             .toList();
 

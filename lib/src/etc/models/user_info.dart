@@ -20,8 +20,9 @@ class UserInfo extends Equatable {
           ? userJson['apiKeysLength'] as int
           : int.parse(userJson['apiKeysLength'] as String),
       localizationDocs: (userJson['localizationDocs'] as List<dynamic>)
-          .map((dynamic e) =>
-              LocalizationDoc.fromJson(e as Map<String, dynamic>))
+          .map(
+            (dynamic e) => LocalizationDoc.fromJson(e as Map<String, dynamic>),
+          )
           .toList(),
     );
   }

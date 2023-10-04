@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 class LangOutput extends Equatable {
   final String lang;
   final DateTime localizedAt;
+
   final Map<String, dynamic> jsonFormattedResponse;
 
   const LangOutput({
@@ -20,6 +21,7 @@ class LangOutput extends Equatable {
           json['jsonDecodedResponse'] as Map<String, dynamic>,
     );
   }
+
   @override
   List<Object?> get props => [
         lang,

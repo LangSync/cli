@@ -28,7 +28,7 @@ class LogoutCommand extends Command<int> {
 
       return ExitCode.success.code;
     } else {
-      final confirm = await logger.confirm(
+      final confirm = logger.confirm(
         'Are you sure you want to logout from the current account?',
       );
 
@@ -59,9 +59,10 @@ class LogoutCommand extends Command<int> {
             stacktrace: stacktrace,
             commandName: name,
           );
+          logger.info('\n');
 
           logger.warn(
-            '\nThis error has been reported to the LangSync team, we will definitely look into it!',
+            'This error has been reported to the LangSync team, we will definitely look into it!',
           );
         } catch (e) {}
 

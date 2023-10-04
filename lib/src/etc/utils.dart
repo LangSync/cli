@@ -86,7 +86,7 @@ class Utils {
         (char * 4),
         ' ${char * 3}',
         '  ${char * 2}',
-        '   $char'
+        '   $char',
       ];
     });
   }

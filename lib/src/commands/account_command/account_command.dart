@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:args/command_runner.dart';
 import 'package:langsync/src/commands/account_command/sub_commands/api_key_command.dart';
 import 'package:langsync/src/commands/account_command/sub_commands/auth_command.dart';

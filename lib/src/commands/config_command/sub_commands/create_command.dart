@@ -50,7 +50,7 @@ class ConfigCreateCommand extends Command<int> {
       await file.delete();
 
       deleteLogger.complete(
-          'The already existing langsync.yaml file is deleted successfully');
+          'The already existing langsync.yaml file is deleted successfully',);
 
       return run();
     } else {

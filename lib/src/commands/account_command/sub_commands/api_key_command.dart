@@ -13,16 +13,17 @@ class ApiKeyCommand extends Command<int> {
   final Logger logger;
 
   @override
-  String get description => 'Create your unique API key';
+  String get description => 'Create your unique API key & LangSync account.';
 
   @override
-  String get name => 'apiKey';
+  String get name => 'create';
 
   @override
   FutureOr<int>? run() async {
     final userSure = logger.confirm(
       "You're about to create a brand new unique API key, do you want to continue?",
     );
+
     if (!userSure) {
       logger.info('Aborted!');
       return 0;

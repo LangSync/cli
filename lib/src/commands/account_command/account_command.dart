@@ -12,7 +12,7 @@ class AccountCommand extends Command<int> {
     addSubcommand(AuthCommand(logger: _logger));
     addSubcommand(InfoCommand(logger: _logger));
     addSubcommand(LogoutCommand(logger: _logger));
-    addSubcommand(ApiKeyCommand(logger: _logger));
+    addSubcommand(AccountCreateCommand(logger: _logger));
   }
 
   @override

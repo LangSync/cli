@@ -8,6 +8,12 @@ import 'package:mason_logger/mason_logger.dart';
 final utils = Utils();
 
 class Utils {
+  final isDebugMode = true;
+
+//! notice the "/"
+  String get baseUrl =>
+      isDebugMode ? 'http://localhost:5559' : 'https://api.langsync.app';
+
   bool isValidApiKeyFormatted(String apiKey) {
     final isNotEmpty = apiKey.isNotEmpty;
     final hasValidLength = apiKey.length == 64;
@@ -59,7 +65,7 @@ class Utils {
   }
 
   String endpoint(String path) {
-    return 'https://api.langsync.app${path.startsWith("/") ? path : "/$path"}';
+    return 'baseUrl${path.startsWith("/") ? path : "/$path"}';
   }
 
   List<String> randomLoadingFrames() {

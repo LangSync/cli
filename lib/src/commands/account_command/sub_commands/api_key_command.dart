@@ -5,8 +5,8 @@ import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
 
-class ApiKeyCommand extends Command<int> {
-  ApiKeyCommand({
+class AccountCreateCommand extends Command<int> {
+  AccountCreateCommand({
     required this.logger,
   });
 
@@ -46,10 +46,8 @@ class ApiKeyCommand extends Command<int> {
       final apiKeyDoc = await NetClient.instance.createApiKey(userName);
 
       progress.complete('API key created successfully!');
-      logger.info('\n');
-
       logger
-        // ..info('Your username: ${apiKeyDoc.username}')
+        ..info('\n')
         ..success('Your API key: ${apiKeyDoc.apiKey}')
         ..info('\n')
         ..warn(

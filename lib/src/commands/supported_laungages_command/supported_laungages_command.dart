@@ -41,7 +41,10 @@ class SupportedLangsCommand extends Command<int> {
       langPrompt = langPrompt.trim();
 
       if (langPrompt.isEmpty) {
-        logger.err('No language(s) provided.');
+        logger
+          ..err('No language(s) provided.')
+          ..docsInfo(path: '/cli-usage/check_launguages_support');
+
         return ExitCode.usage.code;
       } else {
         final langs = langPrompt.split(',').map((e) => e.trim()).toList();

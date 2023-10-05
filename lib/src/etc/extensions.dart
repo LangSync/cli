@@ -56,6 +56,15 @@ extension DateExte on DateTime {
 }
 
 extension LoggerExt on Logger {
+  void docsInfo({
+    required String path,
+  }) {
+    info('\n');
+    info(
+      "For more info, check our docs at: https://docs.langsync.app/${path.startsWith('/') ? path.substring(1) : path}",
+    );
+  }
+
   void customErr({
     required Progress progress,
     required String update,

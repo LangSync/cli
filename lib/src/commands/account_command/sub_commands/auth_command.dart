@@ -76,7 +76,9 @@ class AuthCommand extends Command<int> {
         return ExitCode.ioError.code;
       }
     } else {
-      logger.err('The API key you provided is not valid, please try again.');
+      logger
+        ..err('The API key you provided is not valid, please try again.')
+        ..docsInfo(path: '/cli-usage/auth');
 
       return ExitCode.ioError.code;
     }

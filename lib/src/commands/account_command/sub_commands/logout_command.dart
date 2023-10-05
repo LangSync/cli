@@ -24,7 +24,9 @@ class LogoutCommand extends Command<int> {
     final apiKey = configBox.get('apiKey') as String?;
 
     if (apiKey == null) {
-      logger.info('No account was associated with the CLI.');
+      logger
+        ..info('No account was logged in previously.')
+        ..docsInfo(path: '/cli-usage/auth');
 
       return ExitCode.success.code;
     } else {
@@ -33,7 +35,9 @@ class LogoutCommand extends Command<int> {
       );
 
       if (!confirm) {
-        logger.info('Logout aborted.');
+        logger
+          ..info('Logout aborted.')
+          ..docsInfo(path: '/cli-usage/auth');
 
         return ExitCode.success.code;
       }
@@ -59,11 +63,11 @@ class LogoutCommand extends Command<int> {
             stacktrace: stacktrace,
             commandName: name,
           );
-          logger.info('\n');
-
-          logger.warn(
-            'This error has been reported to the LangSync team, we will definitely look into it!',
-          );
+          logger
+            ..info('\n')
+            ..warn(
+              'This error has been reported to the LangSync team, we will definitely look into it!',
+            );
         } catch (e) {}
 
         return ExitCode.ioError.code;

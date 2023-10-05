@@ -2,6 +2,6 @@
 
 - Changed the account creation command from `apiKey` to `create` for more consistency.
 
-# 0.8.2
+# 0.8.3
 
 - Added info debug command for seeing the variables while developing, it should not be shown in the production version.

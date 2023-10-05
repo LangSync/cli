@@ -50,7 +50,8 @@ class ConfigCreateCommand extends Command<int> {
       await file.delete();
 
       deleteLogger.complete(
-          'The already existing langsync.yaml file is deleted successfully',);
+        'The already existing langsync.yaml file is deleted successfully',
+      );
 
       return run();
     } else {
@@ -68,9 +69,11 @@ class ConfigCreateCommand extends Command<int> {
     final sourceFile = File(sourceLocalizationFilePath);
 
     if (!sourceFile.existsSync()) {
-      logger.err(
-        '''The source localization file at $sourceLocalizationFilePath does not exist.''',
-      );
+      logger
+        ..err(
+          'The source localization file at $sourceLocalizationFilePath does not exist.',
+        )
+        ..docsInfo(path: '/cli-usage/configure');
 
       return ExitCode.software.code;
     }
@@ -96,7 +99,10 @@ class ConfigCreateCommand extends Command<int> {
           'The output directory is created successfully.',
         );
       } else {
-        logger.info('Aborting');
+        logger
+          ..info('Aborting')
+          ..docsInfo(path: '/cli-usage/configure');
+
         return ExitCode.success.code;
       }
     }
@@ -132,7 +138,7 @@ class ConfigCreateCommand extends Command<int> {
       await YamlController.createConfigFile();
 
       creationProgress.update(
-        'langsync.yaml file IS created, updating it with your config...',
+        'langsync.yaml file is created, updating it with your config...',
       );
 
       await YamlController.writeToConfigFile('langsync:\n');

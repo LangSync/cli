@@ -65,7 +65,7 @@ class Utils {
   }
 
   String endpoint(String path) {
-    return 'baseUrl${path.startsWith("/") ? path : "/$path"}';
+    return '$baseUrl${path.startsWith("/") ? path : "/$path"}';
   }
 
   List<String> randomLoadingFrames() {

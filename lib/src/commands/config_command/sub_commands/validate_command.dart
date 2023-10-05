@@ -23,7 +23,8 @@ class ConfigValidateCommand extends Command<int> {
     if (!YamlController.configFileRef.existsSync()) {
       logger
         ..info('There is no langsync.yaml file in the current directory.')
-        ..info('Run `langsync config create` to create one.');
+        ..info('Run `langsync config create` to create one.')
+        ..docsInfo(path: '/cli-usage/configure');
 
       return ExitCode.success.code;
     }
@@ -62,7 +63,8 @@ class ConfigValidateCommand extends Command<int> {
             '''
             Please check your langsync.yaml file, or run `langsync config create` to create a new one.
             ''',
-          );
+          )
+          ..docsInfo(path: '/cli-usage/configure');
 
         return ExitCode.software.code;
       }

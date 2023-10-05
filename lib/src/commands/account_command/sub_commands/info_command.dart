@@ -78,10 +78,11 @@ class InfoCommand extends Command<int> {
           commandName: name,
         );
 
-        logger.info('\n');
-        logger.warn(
-          'This error has been reported to the LangSync team, we will definitely look into it!',
-        );
+        logger
+          ..info('\n')
+          ..warn(
+            'This error has been reported to the LangSync team, we will definitely look into it!',
+          );
       } catch (e) {}
 
       return ExitCode.software.code;

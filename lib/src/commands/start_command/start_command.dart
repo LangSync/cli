@@ -35,8 +35,10 @@ class StartCommand extends Command<int> {
 
     if (apiKey == null) {
       configFilesValidationProgress.fail(
-        'You need to authenticate first with your account API key, see Docs.',
+        'You need to authenticate first with your account API key.',
       );
+
+      logger.docsInfo(path: '/cli-usage/auth');
 
       return ExitCode.config.code;
     }
@@ -45,6 +47,8 @@ class StartCommand extends Command<int> {
       configFilesValidationProgress.fail(
         'No langsync.yaml file found, you need to create one and configure it.',
       );
+
+      logger.docsInfo(path: '/cli-usage/configure');
 
       return ExitCode.config.code;
     }
@@ -57,6 +61,7 @@ class StartCommand extends Command<int> {
       configFilesValidationProgress.update('Validating langsync.yaml file..');
 
       YamlController.validateConfigFields(parsedYaml);
+
       configFilesValidationProgress
           .complete('Your langsync.yaml file and configuration are valid.');
     } catch (e, stacktrace) {

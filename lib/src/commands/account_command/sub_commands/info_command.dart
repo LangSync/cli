@@ -32,9 +32,10 @@ class InfoCommand extends Command<int> {
     final apiKey = configBox.get('apiKey') as String?;
 
     if (apiKey == null) {
-      logger.info(
-        'You are not authenticated, please provide an API key to authenticate, see Docs',
-      );
+      logger
+        ..info(
+            'You are not authenticated, please provide an API key to authenticate.')
+        ..docsInfo(path: '/cli-usage/auth');
 
       return ExitCode.usage.code;
     }

@@ -1,0 +1,3 @@
+# 0.8.1
+
+changed the account creation command from `apiKey` to `create` for more consistency.

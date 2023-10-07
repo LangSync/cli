@@ -13,11 +13,12 @@ import 'package:pub_updater/pub_updater.dart';
 
 const executableName = 'langsync';
 const packageName = 'langsync';
-const description =
+final description =
     '''
 
 An AI powered Command Line Interface (CLI) tool that helps you process your original language-specific files such translations, strings & texts.. and generates the corresponding translated files in the target language(s).
 
+  ${utils.isDebugMode ? '\n${lightRed.wrap('Debug mode is enabled!')}' : ''}
 ''';
 
 /// {@template langsync_command_runner}

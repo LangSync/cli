@@ -1,17 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:http/http.dart' as http;
 import 'package:langsync/src/etc/models/api_key_res.dart';
 import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/models/lang_output.dart';
 import 'package:langsync/src/etc/models/partition.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
 import 'package:langsync/src/etc/models/user_info.dart';
-import 'package:langsync/src/etc/utils.dart';
+import 'package:langsync/src/etc/networking/client_boilerplate.dart';
 import 'package:langsync/src/version.dart';
 
-class NetClient {
+class NetClient extends NetClientBoilerPlate {
   NetClient._();
 
   final client = HttpClient();
@@ -21,7 +19,7 @@ class NetClient {
   static NetClient get instance => _instance;
 
   Future<UserInfo> userInfo({required String apiKey}) {
-    return _makeRes<UserInfo>('user', 'GET', {
+    return makeRes<UserInfo>('user', 'GET', {
       'Authorization': 'Bearer $apiKey',
     }, {}, (res) {
       return UserInfo.fromJson(res);
@@ -29,7 +27,7 @@ class NetClient {
   }
 
   Future<Map<String, bool>> supportsLang(List<String> lang) {
-    return _makeRes<Map<String, bool>>('/langs-support', 'POST', {}, {
+    return makeRes<Map<String, bool>>('/langs-support', 'POST', {}, {
       'langs': lang,
     }, (res) {
       final map = <String, bool>{};
@@ -44,85 +42,26 @@ class NetClient {
     });
   }
 
-  Future<T> _makeRes<T>(
-    String endpoint,
-    String method,
-    Map<String, String> headers,
-    Map<String, dynamic> body,
-    T Function(Map<String, dynamic> res) onSuccess,
-  ) async {
-    final uri = Uri.parse(utils.endpoint(endpoint));
-
-    final request = http.Request(method, uri);
-
-    request.headers.addAll({
-      ...headers,
-      'Content-Type': 'application/json',
-    });
-
-    // include body in request.
-
-    request.body = json.encode(body);
-
-    final res = await request.send();
-    final asBytes = await res.stream.bytesToString();
-
-    final decoded = jsonDecode(asBytes) as Map<String, dynamic>;
-
-    if (res.statusCode >= 200 && res.statusCode < 300) {
-      return onSuccess(decoded);
-    } else {
-      throw Exception(decoded);
-    }
-  }
-
-  Future<T> _makeMultiPartRes<T>(
-    String endpoint,
-    String method,
-    Map<String, String> headers,
-    Map<String, dynamic> body,
-    T Function(Map<String, dynamic> res) onSuccess,
-  ) async {
-    final uri = Uri.parse(utils.endpoint(endpoint));
-    final request = http.MultipartRequest(method, uri);
-
-    request.headers.addAll({...headers});
-    body.forEach((key, value) {
-      if (value is File) {
-        final multipartFile = http.MultipartFile.fromBytes(
-          key,
-          value.readAsBytesSync(),
-          filename: value.path.split('/').last,
-        );
-
-        request.files.add(multipartFile);
-      } else {
-        request.fields[key] = value.toString();
-      }
-    });
-
-    final res = await request.send();
-    final asBytes = await res.stream.bytesToString();
-
-    return onSuccess(jsonDecode(asBytes) as Map<String, dynamic>);
-  }
-
-  Future<LocalizationOutput> startAIProcess({
-    required LangSyncConfig asConfig,
+  Stream<LangSyncServerSSE> startAIProcess({
+    required Iterable<String> langs,
     required String apiKey,
     required String jsonPartitionId,
     bool includeOutput = false,
   }) {
-    return _makeRes(
+    return sseStreamReq(
       '/process-translation',
       'POST',
       {'Authorization': 'Bearer $apiKey'},
       {
         'jsonPartitionsId': jsonPartitionId,
-        'langs': asConfig.langs.toList(),
+        'langs': langs.toList(),
         'includeOutput': includeOutput,
       },
-      LocalizationOutput.fromJson,
+      (res) {
+        final decoded = jsonDecode(res) as Map<String, dynamic>;
+
+        return LangSyncServerSSE.fromJson(decoded);
+      },
     );
   }
 
@@ -130,7 +69,7 @@ class NetClient {
     required String apiKey,
     required File sourceFile,
   }) {
-    return _makeMultiPartRes(
+    return makeMultiPartRes(
       '/save-partitioned-json-of-user',
       'post',
       {'Authorization': 'Bearer $apiKey'},
@@ -142,7 +81,7 @@ class NetClient {
   Future<bool> checkWetherApiKeyExistsForSomeUser({
     required String apiKey,
   }) async {
-    return _makeRes(
+    return makeRes(
       '/verify-api-key-existence',
       'GET',
       {'Authorization': 'Bearer $apiKey'},
@@ -163,7 +102,7 @@ class NetClient {
   Future<List<LangOutput>> retrieveJsonPartitionWithOutput({
     required String outputPartitionId,
   }) {
-    return _makeRes(
+    return makeRes(
       '/get-partitioned-json-of-user',
       'GET',
       {},
@@ -183,7 +122,7 @@ class NetClient {
   }
 
   Future<APIKeyResponse> createApiKey(String userName) {
-    return _makeRes('/create-account-with-api-key-beta', 'POST', {}, {
+    return makeRes('/create-account-with-api-key-beta', 'POST', {}, {
       'username': userName,
     }, (res) {
       return APIKeyResponse.fromJson(res);
@@ -196,7 +135,7 @@ class NetClient {
     required String commandName,
     String? processId,
   }) {
-    return _makeRes(
+    return makeRes(
       '/log-exception',
       'POST',
       {},

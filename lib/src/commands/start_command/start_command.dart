@@ -94,8 +94,6 @@ class StartCommand extends Command<int> {
       'Saving your source file at ${asConfig.sourceFile}..',
     );
 
-    late Progress localizationProgress;
-
     try {
       final jsonPartitionRes = await NetClient.instance.savePartitionsJson(
         apiKey: apiKey,
@@ -106,25 +104,15 @@ class StartCommand extends Command<int> {
           .complete('Your source file has been saved successfully.');
 
       logger
-            ..info('\n')
-            ..warn(
-              'The ID of this operation is: ${jsonPartitionRes.partitionId}. in case of any issues, please contact us providing this ID so we can help.',
-            )
-          // ..info("\n")
-          ;
+        ..info('\n')
+        ..warn(
+          'The ID of this operation is: ${jsonPartitionRes.partitionId}. in case of any issues, please contact us providing this ID so we can help.',
+        );
 
-      localizationProgress = logger.customProgress(
-        'Starting localization & translation to your target languages..',
-      );
-
-      final result = await NetClient.instance.startAIProcess(
+      final result = await aIProcessResult(
         apiKey: apiKey,
-        asConfig: asConfig,
-        jsonPartitionId: jsonPartitionRes.partitionId,
-      );
-
-      localizationProgress.complete(
-        'Localization operation is completed successfully.',
+        langs: asConfig.langs,
+        partitionId: jsonPartitionRes.partitionId,
       );
 
       logger
@@ -150,7 +138,7 @@ class StartCommand extends Command<int> {
     } catch (e, stacktrace) {
       logger.customErr(
         error: e,
-        progress: localizationProgress,
+        progress: savingSourceFileProgress,
         update: 'Something went wrong, try again!',
       );
 
@@ -257,5 +245,36 @@ class StartCommand extends Command<int> {
     logger
       ..info('\n')
       ..success('All files are created successfully.');
+  }
+
+  Future<LangSyncServerResultSSE> aIProcessResult({
+    required String apiKey,
+    required Iterable<String> langs,
+    required String partitionId,
+  }) async {
+    final completer = Completer<LangSyncServerResultSSE>();
+
+    final processStream = NetClient.instance.startAIProcess(
+      apiKey: apiKey,
+      langs: langs,
+      jsonPartitionId: partitionId,
+    );
+
+    LangSyncServerResultSSE? resultSSE;
+
+    processStream.listen(
+      (event) {
+        if (event is LangSyncServerResultSSE) {
+          resultSSE = event;
+        } else {
+          logger.info(event.message);
+        }
+      },
+      onDone: () {
+        completer.complete(resultSSE!);
+      },
+    );
+
+    return completer.future;
   }
 }

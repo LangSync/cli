@@ -1,11 +1,20 @@
-# 0.8.1
+# ChangeLogs
+
+
+## 0.8.1
 
 - Changed the account creation command from `apiKey` to `create` for more consistency.
 
-# 0.8.3
+## 0.8.3
 
 - Added info debug command for seeing the variables while developing, it should not be shown in the production version.
 
-# 0.9.2
+## 0.9.2
 
 - Added support real-time updates during the localization process (langsync start) which allow now for following and debugging each languages localization and tasks.
+- Bug Fixes.
+
+## 0.9.4
+
+- Bug Fixes.
+- Appliance of new Stream API, which allow for better performance, faster updates and more stability.

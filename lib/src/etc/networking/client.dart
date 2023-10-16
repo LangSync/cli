@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:langsync/src/etc/models/api_key_res.dart';
-import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/models/lang_output.dart';
 import 'package:langsync/src/etc/models/partition.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';

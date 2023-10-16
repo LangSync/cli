@@ -75,7 +75,7 @@ class NetClientBoilerPlate {
     Map<String, dynamic> body,
     T Function(String res) onSuccess,
   ) {
-    final _controller = StreamController<T>.broadcast();
+    final controller = StreamController<T>.broadcast();
 
     final uri = Uri.parse(utils.endpoint(endpoint));
     final request = http.Request(method, uri);
@@ -95,17 +95,17 @@ class NetClientBoilerPlate {
             .map((data) => onSuccess(data))
             .listen(
           (event) {
-            _controller.sink.add(event);
+            controller.sink.add(event);
           },
-          onError: (e) {
-            _controller.sink.addError(e as Object);
+          onError: (Object e) {
+            controller.sink.addError(e);
           },
           cancelOnError: true,
-          onDone: _controller.close,
+          onDone: controller.close,
         );
       },
     );
 
-    return _controller.stream;
+    return controller.stream;
   }
 }

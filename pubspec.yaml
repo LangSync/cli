@@ -1,6 +1,6 @@
 name: langsync
 description: A Very Good Project created by Very Good CLI.
-version: 0.9.0
+version: 0.9.211
 publish_to: none
 
 environment:

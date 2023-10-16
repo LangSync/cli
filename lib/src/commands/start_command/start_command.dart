@@ -187,7 +187,7 @@ class StartCommand extends Command<int> {
     for (var index = 0; index < outputList.length; index++) {
       final current = outputList[index];
 
-      final isError = current.jsonFormattedResponse['error'] != null;
+      final isError = current.jsonFormattedResponse['langsyncError'] != null;
 
       if (isError) {
         final fileName = '${current.lang}.error.json';

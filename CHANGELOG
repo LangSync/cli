@@ -5,3 +5,7 @@
 # 0.8.3
 
 - Added info debug command for seeing the variables while developing, it should not be shown in the production version.
+
+# 0.9.2
+
+- Added support real-time updates during the localization process (langsync start) which allow now for following and debugging each languages localization and tasks.

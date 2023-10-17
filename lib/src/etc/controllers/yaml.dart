@@ -16,7 +16,14 @@ class YamlController extends ConfigFile {
     );
   }
 
-  Future<void> iterateAndWriteToConfigFile(
+  @override
+  Future<void> writeNewConfig(Map<String, dynamic> config) async {
+    await super.writeToConfigFile('langsync:\n');
+
+    await _iterateAndWriteToConfigFile(config);
+  }
+
+  Future<void> _iterateAndWriteToConfigFile(
     Map<dynamic, dynamic> config,
   ) async {
     super.iterateOverConfig(
@@ -33,12 +40,5 @@ class YamlController extends ConfigFile {
         }
       },
     );
-  }
-
-  @override
-  Future<void> writeNewConfig(Map<String, dynamic> config) async {
-    await super.writeToConfigFile('langsync:\n');
-
-    await iterateAndWriteToConfigFile(config);
   }
 }

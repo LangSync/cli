@@ -6,7 +6,7 @@ class LangSyncConfig extends Equatable {
     required this.sourceFile,
     required this.outputDir,
     required this.langs,
-    required this.languageLocalizationMaxDelay,
+    this.languageLocalizationMaxDelay,
   });
 
   factory LangSyncConfig.fromMap(Map<dynamic, dynamic> map) {
@@ -21,14 +21,14 @@ class LangSyncConfig extends Equatable {
       outputDir: langsyncMapField['output'] as String,
       langs: target,
       languageLocalizationMaxDelay:
-          langsyncMapField['languageLocalizationMaxDelay'] as int,
+          (langsyncMapField['languageLocalizationMaxDelay'] as int?) ?? 450,
     );
   }
 
   final String sourceFile;
   final String outputDir;
   final Iterable<String> langs;
-  final int languageLocalizationMaxDelay;
+  final int? languageLocalizationMaxDelay;
 
   List<String> get langsJsonFiles => langs.map((e) => '$e.json').toList();
 
@@ -45,7 +45,7 @@ class LangSyncConfig extends Equatable {
       'source': sourceFile,
       'output': outputDir,
       'target': langs.toList(),
-      'languageLocalizationMaxDelay': languageLocalizationMaxDelay,
+      'languageLocalizationMaxDelay': languageLocalizationMaxDelay ?? 450,
     };
   }
 }

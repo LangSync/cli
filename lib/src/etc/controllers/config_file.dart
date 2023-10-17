@@ -126,7 +126,7 @@ abstract class ConfigFile {
       sourceFile: sourceLocalizationFilePath,
       outputDir: outputDir,
       langs: targetLangsList,
-      languageLocalizationMaxDelay: languageLocalizationMaxDelay ?? 450,
+      languageLocalizationMaxDelay: languageLocalizationMaxDelay,
     ).toMap();
   }
 

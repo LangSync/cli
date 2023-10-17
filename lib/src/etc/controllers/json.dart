@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:langsync/src/etc/controllers/config_file.dart';
+import 'package:langsync/src/etc/extensions.dart';
 
 class JsonController extends ConfigFile {
   @override
@@ -19,7 +20,7 @@ class JsonController extends ConfigFile {
   @override
   Future<void> writeNewConfig(Map<String, dynamic> config) {
     return super.writeToConfigFile(
-      jsonEncode({'langsync': config}),
+      {'langsync': config}.toPrettyJson(),
     );
   }
 }

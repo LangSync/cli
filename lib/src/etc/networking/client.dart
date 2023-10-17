@@ -45,6 +45,7 @@ class NetClient extends NetClientBoilerPlate {
     required Iterable<String> langs,
     required String apiKey,
     required String jsonPartitionId,
+    required int? languageLocalizationMaxDelay,
     bool includeOutput = false,
   }) {
     return sseStreamReq(
@@ -55,6 +56,7 @@ class NetClient extends NetClientBoilerPlate {
         'jsonPartitionsId': jsonPartitionId,
         'langs': langs.toList(),
         'includeOutput': includeOutput,
+        'languageLocalizationMaxDelay': languageLocalizationMaxDelay,
       },
       (res) {
         final decoded = jsonDecode(res) as Map<String, dynamic>;

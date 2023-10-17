@@ -124,6 +124,7 @@ class StartCommand extends Command<int> {
       final result = await aIProcessResult(
         apiKey: apiKey,
         langs: asConfig.langs,
+        languageLocalizationMaxDelay: asConfig.languageLocalizationMaxDelay,
         partitionId: jsonPartitionRes.partitionId,
       );
 
@@ -263,6 +264,7 @@ class StartCommand extends Command<int> {
     required String apiKey,
     required Iterable<String> langs,
     required String partitionId,
+    required int? languageLocalizationMaxDelay,
   }) async {
     final completer = Completer<LangSyncServerResultSSE>();
 

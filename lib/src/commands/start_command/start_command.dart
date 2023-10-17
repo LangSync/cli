@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:hive/hive.dart';
+import 'package:langsync/src/etc/controllers/config_file.dart';
 import 'package:langsync/src/etc/controllers/yaml.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/models/lang_output.dart';
@@ -43,9 +44,19 @@ class StartCommand extends Command<int> {
       return ExitCode.config.code;
     }
 
-    if (!YamlController.configFileRef.existsSync()) {
+    ConfigFile configFile;
+
+    try {
+      final configFiles = ConfigFile.configFilesInCurrentDir.toList();
+
+      configFile = _controllerFromFile(configFiles: configFiles);
+    } catch (e) {
+      return e as int;
+    }
+
+    if (!configFile.configFileRef.existsSync()) {
       configFilesValidationProgress.fail(
-        'No langsync.yaml file found, you need to create one and configure it.',
+        'No ${configFile.configFileName} file found, you need to create one and configure it.',
       );
 
       logger.docsInfo(path: '/cli-usage/configure');
@@ -53,17 +64,19 @@ class StartCommand extends Command<int> {
       return ExitCode.config.code;
     }
 
-    configFilesValidationProgress.update('Parsing langsync.yaml file..');
+    configFilesValidationProgress
+        .update('Parsing ${configFile.configFileName} file..');
 
-    final parsedYaml = await YamlController.parsedYaml;
+    final parsedConfig = await configFile.parsed();
 
     try {
-      configFilesValidationProgress.update('Validating langsync.yaml file..');
-
-      YamlController.validateConfigFields(parsedYaml);
-
       configFilesValidationProgress
-          .complete('Your langsync.yaml file and configuration are valid.');
+          .update('Validating ${configFile.configFileName} file..');
+
+      configFile.validateConfigFields(parsedConfig);
+
+      configFilesValidationProgress.complete(
+          'Your ${configFile.configFileName} file and configuration are valid.');
     } catch (e, stacktrace) {
       logger.customErr(
         progress: configFilesValidationProgress,
@@ -88,7 +101,7 @@ class StartCommand extends Command<int> {
       return ExitCode.config.code;
     }
 
-    final asConfig = parsedYaml.toConfigModeled();
+    final asConfig = parsedConfig.toConfigModeled();
 
     final savingSourceFileProgress = logger.customProgress(
       'Saving your source file at ${asConfig.sourceFile}..',
@@ -276,5 +289,30 @@ class StartCommand extends Command<int> {
     );
 
     return completer.future;
+  }
+
+  ConfigFile _controllerFromFile({
+    required List<FileSystemEntity> configFiles,
+  }) {
+    if (configFiles.isEmpty) {
+      logger
+        ..info(
+          'There is no LangSync configuration file in the current directory.',
+        )
+        ..info('Run `langsync config create` to create one.')
+        ..docsInfo(path: '/cli-usage/configure');
+
+      throw ExitCode.software.code;
+    }
+
+    if (configFiles.length > 1) {
+      logger.info(
+        'There are multiple LangSync configuration files in the current directory, please remove the extra ones and try again.',
+      );
+
+      throw ExitCode.software.code;
+    }
+
+    return ConfigFile.controllerFromFile(configFiles.first);
   }
 }

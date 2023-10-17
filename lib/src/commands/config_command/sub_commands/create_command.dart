@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:langsync/src/etc/controllers/config_file.dart';
+import 'package:langsync/src/etc/controllers/json.dart';
 import 'package:langsync/src/etc/controllers/yaml.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/networking/client.dart';
@@ -10,28 +12,45 @@ import 'package:mason_logger/mason_logger.dart';
 class ConfigCreateCommand extends Command<int> {
   ConfigCreateCommand({
     required this.logger,
-  });
+  }) {
+    argParser
+      ..addFlag(
+        'json',
+        help: 'Create a JSON file for the configuration (langsync.json)',
+        negatable: false,
+      )
+      ..addFlag(
+        'yaml',
+        help:
+            'Create a YAML file for the configuration (langsync.yaml or langsync.yml)',
+        negatable: false,
+      );
+  }
 
   final Logger logger;
 
   @override
   String get description =>
-      'Creates a new langsync.yaml file in the current directory.';
+      'Creates a new LangSync configuration file in the current directory, you can also specify the type of the configuration file (JSON, YAML)';
 
   @override
   String get name => 'create';
 
   @override
   Future<int> run() async {
+    final configFileController = ConfigFile.fromArgResults(argResults!);
+
     try {
-      final file = File('./langsync.yaml');
+      final file = configFileController.configFileRef;
 
       if (file.existsSync()) {
-        logger.info('langsync.yaml already exists in the current directory.');
+        logger.info(
+          '${configFileController.configFileName} already exists in the current directory.',
+        );
 
-        return await _requestToOverwrite(file);
+        return await _requestToOverwrite(file, configFileController);
       } else {
-        return await _promptForConfigFileCreation();
+        return await _promptForConfigFileCreation(configFileController);
       }
     } catch (e) {
       logger.err(e.toString());
@@ -40,17 +59,19 @@ class ConfigCreateCommand extends Command<int> {
     }
   }
 
-  Future<int> _requestToOverwrite(File file) async {
+  Future<int> _requestToOverwrite(
+      File file, ConfigFile configFileController) async {
     final confirmOverwrite = logger.confirm('Do you want to overwrite it?');
 
     if (confirmOverwrite) {
-      final deleteLogger =
-          logger.customProgress('Deleting the existant langsync.yaml file');
+      final deleteLogger = logger.customProgress(
+        'Deleting the existent ${configFileController.configFileName} file',
+      );
 
       await file.delete();
 
       deleteLogger.complete(
-        'The already existing langsync.yaml file is deleted successfully',
+        'The already existing ${configFileController.configFileName} file is deleted successfully',
       );
 
       return run();
@@ -61,12 +82,22 @@ class ConfigCreateCommand extends Command<int> {
     }
   }
 
-  Future<int> _promptForConfigFileCreation() async {
-    final sourceLocalizationFilePath = logger.prompt(
-      'Enter the path to the source localization file (e.g. ./locales/en.json): ',
+  Future<int> _promptForConfigFileCreation(
+    ConfigFile configFileController,
+  ) async {
+    const examplePath = './locales/en.json';
+
+    var sourceLocalizationFilePath = logger.prompt(
+      'Enter the path to the source localization file (e.g. $examplePath): ',
     );
 
-    final sourceFile = File(sourceLocalizationFilePath);
+    sourceLocalizationFilePath = sourceLocalizationFilePath.isEmpty
+        ? examplePath
+        : sourceLocalizationFilePath;
+
+    final sourceFile = File(
+      sourceLocalizationFilePath,
+    );
 
     if (!sourceFile.existsSync()) {
       logger
@@ -78,9 +109,13 @@ class ConfigCreateCommand extends Command<int> {
       return ExitCode.software.code;
     }
 
-    final outputDir = logger.prompt(
-      'Enter the path to the output directory (e.g. ./locales): ',
+    const defaultOutpitDir = './locales';
+
+    var outputDir = logger.prompt(
+      'Enter the path to the output directory (e.g. $defaultOutpitDir): ',
     );
+
+    outputDir = outputDir.isEmpty ? defaultOutpitDir : outputDir;
 
     final outputDirectory = Directory(outputDir);
 
@@ -107,46 +142,43 @@ class ConfigCreateCommand extends Command<int> {
       }
     }
 
-    final targetLangs = logger.prompt(
-      'Enter the target languages (e.g. italian,spanish,german): ',
+    const defaultTarget = 'zh, ru, ar, fr';
+
+    var targetLangs = logger.prompt(
+      'Enter the target languages (e.g. $defaultTarget): ',
     );
+
+    targetLangs = targetLangs.isEmpty ? defaultTarget : targetLangs;
 
     final targetLangsList = targetLangs.trim().split(',').map((e) => e.trim());
 
-    if (targetLangsList.isEmpty) {
-      logger.err('No target languages were provided.');
+    if (targetLangsList.any((e) => e.length < 2)) {
+      logger.err('Some of the target languages are invalid.');
 
       return ExitCode.software.code;
-    } else {
-      if (targetLangsList.any((e) => e.length < 2)) {
-        logger.err('Some of the target languages are invalid.');
-
-        return ExitCode.software.code;
-      }
     }
 
-    final config = YamlController.futureYamlFormatFrom(
+    final config = configFileController.futureConfigToWrite(
       outputDir: outputDir,
       sourceLocalizationFilePath: sourceLocalizationFilePath,
       targetLangsList: targetLangsList,
     );
 
-    final creationProgress =
-        logger.customProgress('Creating langsync.yaml file');
+    final creationProgress = logger.customProgress(
+      'Creating ${configFileController.configFileName} file',
+    );
 
     try {
-      await YamlController.createConfigFile();
+      await configFileController.createConfigFile();
 
       creationProgress.update(
-        'langsync.yaml file is created, updating it with your config...',
+        '${configFileController.configFileName} file is created, updating it with your config...',
       );
 
-      await YamlController.writeToConfigFile('langsync:\n');
-
-      await YamlController.iterateAndWriteToConfigFile(config);
+      await configFileController.writeNewConfig(config);
 
       creationProgress.complete(
-        'langsync.yaml file created & updated with your config successfully.',
+        '${configFileController.configFileName} file created & updated with your config successfully.',
       );
 
       return ExitCode.success.code;
@@ -155,7 +187,7 @@ class ConfigCreateCommand extends Command<int> {
         error: e,
         progress: creationProgress,
         update:
-            'Something went wrong while creating the langsync.yaml file, please try again.',
+            'Something went wrong while creating the ${configFileController.configFileName} file, please try again.',
       );
 
       try {
@@ -165,10 +197,11 @@ class ConfigCreateCommand extends Command<int> {
           commandName: name,
         );
 
-        logger.info('\n');
-        logger.warn(
-          'This error has been reported to the LangSync team, we will definitely look into it!',
-        );
+        logger
+          ..info('\n')
+          ..warn(
+            'This error has been reported to the LangSync team, we will definitely look into it!',
+          );
       } catch (e) {}
 
       return ExitCode.software.code;

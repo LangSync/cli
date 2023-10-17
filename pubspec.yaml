@@ -13,6 +13,7 @@ dependencies:
   hive: ^2.2.3
   http: ^1.1.0
   mason_logger: ^0.2.4
+  meta: ^1.11.0
   pub_updater: ^0.3.0
   yaml: ^3.1.2
 

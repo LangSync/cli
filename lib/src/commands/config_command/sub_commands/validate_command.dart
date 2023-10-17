@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
+
 import 'package:args/command_runner.dart';
-import 'package:langsync/src/etc/controllers/yaml.dart';
+import 'package:langsync/src/etc/controllers/config_file.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:mason_logger/mason_logger.dart';
 
@@ -20,48 +22,52 @@ class ConfigValidateCommand extends Command<int> {
 
   @override
   Future<int>? run() async {
-    if (!YamlController.configFileRef.existsSync()) {
-      logger
-        ..info('There is no langsync.yaml file in the current directory.')
-        ..info('Run `langsync config create` to create one.')
-        ..docsInfo(path: '/cli-usage/configure');
+    final configFiles = ConfigFile.configFilesInCurrentDir.toList();
 
-      return ExitCode.success.code;
+    ConfigFile configFile;
+
+    try {
+      configFile = _controllerFromFile(configFiles: configFiles);
+    } catch (e) {
+      return e as int;
     }
 
-    final validationProgress =
-        logger.customProgress('Validating the existent langsync.yaml file');
+    final validationProgress = logger.customProgress(
+      'Validating the existent ${configFile.configFileName} file',
+    );
 
-    final yamlMap = await YamlController.parsedYaml;
+    final configMap = await configFile.parsed();
 
-    final langsyncConfig = yamlMap['langsync'];
+    final langsyncConfig = configMap['langsync'];
 
     if (langsyncConfig == null) {
       validationProgress.complete(
-        'langsync.yaml file is missing a `langsync` key.',
+        '${configFile.configFileName} file is missing a `langsync` key.',
       );
 
       return ExitCode.software.code;
     } else {
       validationProgress.update('Parsing the configuration file');
 
-      final parsedYaml = await YamlController.parsedYaml;
+      final parsedLangsyncMap = await configFile.parsed();
+
       validationProgress.update('Validating the configuration file');
 
-      final isValid = YamlController.validateConfigFields(parsedYaml);
+      final isValid = configFile.validateConfigFields(parsedLangsyncMap);
 
       validationProgress.complete('Validation task completed.');
 
       if (isValid) {
-        YamlController.iterateAndLogConfig(parsedYaml, logger);
-        logger.info('langsync.yaml file is valid.');
+        configFile.iterateAndLogConfig(parsedLangsyncMap, logger);
+
+        logger.info('${configFile.configFileName} file is valid.');
         return ExitCode.success.code;
       } else {
         logger
-          ..info('langsync.yaml file is invalid.')
+          ..info('${configFile.configFileName} file is invalid.')
           ..info(
             '''
-            Please check your langsync.yaml file, or run `langsync config create` to create a new one.
+            Please check your ${configFile.configFileName} file, or run `langsync config create` to create a new one.
             ''',
           )
           ..docsInfo(path: '/cli-usage/configure');
@@ -69,5 +75,30 @@ class ConfigValidateCommand extends Command<int> {
         return ExitCode.software.code;
       }
     }
+  }
+
+  ConfigFile _controllerFromFile({
+    required List<FileSystemEntity> configFiles,
+  }) {
+    if (configFiles.isEmpty) {
+      logger
+        ..info(
+          'There is no LangSync configuration file in the current directory.',
+        )
+        ..info('Run `langsync config create` to create one.')
+        ..docsInfo(path: '/cli-usage/configure');
+
+      throw ExitCode.software.code;
+    }
+
+    if (configFiles.length > 1) {
+      logger.info(
+        'There are multiple LangSync configuration files in the current directory, please remove the extra ones and try again.',
+      );
+
+      throw ExitCode.software.code;
+    }
+
+    return ConfigFile.controllerFromFile(configFiles.first);
   }
 }

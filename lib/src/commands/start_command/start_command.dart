@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:hive/hive.dart';
 import 'package:langsync/src/etc/controllers/config_file.dart';
-import 'package:langsync/src/etc/controllers/yaml.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/models/lang_output.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';

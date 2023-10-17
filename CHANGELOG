@@ -21,4 +21,6 @@
 
 ## 0.9.42
 
+- Bug Fixes in comptaibility with the new depency inversion principle of the configuration logic.
 - Added support for json configuration in addition of the yaml configuration, with the default one being yaml, the user can specify it with the `--json`, `--yaml`...
+- Added syntax highlighting for the configuration files.

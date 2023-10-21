@@ -41,14 +41,14 @@ class NetClient extends NetClientBoilerPlate {
     });
   }
 
-  Stream<LangSyncServerSSE> startAIProcess({
+  Stream<List<LangSyncServerSSE>> startAIProcess({
     required Iterable<String> langs,
     required String apiKey,
     required String jsonPartitionId,
     required int? languageLocalizationMaxDelay,
     bool includeOutput = false,
   }) {
-    return sseStreamReq(
+    return sseStreamReq<List<LangSyncServerSSE>>(
       '/process-translation',
       'POST',
       {'Authorization': 'Bearer $apiKey'},
@@ -59,9 +59,14 @@ class NetClient extends NetClientBoilerPlate {
         'languageLocalizationMaxDelay': languageLocalizationMaxDelay,
       },
       (res) {
-        final decoded = jsonDecode(res) as Map<String, dynamic>;
+        final split = res.split('\n\n').where((element) => element.isNotEmpty);
 
-        return LangSyncServerSSE.fromJson(decoded);
+        return split.map((event) {
+          final decodedEvent = jsonDecode(event.trim().replaceAll('\n', ''))
+              as Map<String, dynamic>;
+
+          return LangSyncServerSSE.fromJson(decodedEvent);
+        }).toList();
       },
     );
   }

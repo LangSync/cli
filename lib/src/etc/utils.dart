@@ -12,7 +12,7 @@ class Utils {
 
 //! notice the "/"
   String get baseUrl =>
-      isDebugMode ? 'http://192.168.0.2:5559' : 'http://test.langsync.app:5560';
+      isDebugMode ? 'http://192.168.0.4:5559' : 'http://api.langsync.app';
 
   bool isValidApiKeyFormatted(String apiKey) {
     final isNotEmpty = apiKey.isNotEmpty;

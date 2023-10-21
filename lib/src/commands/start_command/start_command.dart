@@ -223,7 +223,7 @@ class StartCommand extends Command<int> {
               'message':
                   'Please, if you think that this is an unexpected bug in LangSync, contact us so we can help',
               'partitionId': partitionId,
-              'processedResponse': current.jsonFormattedResponse.toString(),
+              'processedResponse': current.jsonFormattedResponse,
               'target_language': current.lang,
               'success_file_name': '${current.lang}.json',
               'LocalizationTryDate': {
@@ -272,16 +272,21 @@ class StartCommand extends Command<int> {
       apiKey: apiKey,
       langs: langs,
       jsonPartitionId: partitionId,
+      languageLocalizationMaxDelay: languageLocalizationMaxDelay,
     );
 
     LangSyncServerResultSSE? resultSSE;
 
     processStream.listen(
-      (event) {
-        if (event is LangSyncServerResultSSE) {
-          resultSSE = event;
-        } else {
-          logger.info(event.message);
+      (events) {
+        for (var i = 0; i < events.length; i++) {
+          final curr = events[i];
+
+          if (curr is LangSyncServerResultSSE) {
+            resultSSE = curr;
+          } else {
+            logger.info(curr.message);
+          }
         }
       },
       onDone: () {

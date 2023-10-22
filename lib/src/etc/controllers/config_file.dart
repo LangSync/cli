@@ -23,15 +23,15 @@ abstract class ConfigFile {
     YamlController(),
     JsonController(),
   ].asMap().map(
-        (_, controller) => MapEntry(controller.configFileExtension, controller),
+        (_, controller) => MapEntry(controller.configFileName, controller),
       );
 
   static Iterable<FileSystemEntity> get configFilesInCurrentDir =>
       Directory('.').listSync().where(
         (file) {
-          final extension = file.path.split('.').last;
+          final fileName = file.path.split('/').last;
 
-          return _controllers.containsKey(extension);
+          return _controllers.containsKey(fileName);
         },
       );
 
@@ -155,8 +155,8 @@ abstract class ConfigFile {
   Future<void> writeNewConfig(Map<String, dynamic> config);
 
   static ConfigFile controllerFromFile(FileSystemEntity first) {
-    final extension = first.path.split('.').last;
+    final fileName = first.path.split('/').last;
 
-    return _controllers[extension]!;
+    return _controllers[fileName]!;
   }
 }

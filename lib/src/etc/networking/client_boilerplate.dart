@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/utils.dart';
 
 class NetClientBoilerPlate {
@@ -53,7 +54,7 @@ class NetClientBoilerPlate {
         final multipartFile = http.MultipartFile.fromBytes(
           key,
           value.readAsBytesSync(),
-          filename: value.path.split('/').last,
+          filename: value.fileNameOnly,
         );
 
         request.files.add(multipartFile);

@@ -80,8 +80,6 @@ class ConfigValidateCommand extends Command<int> {
   ConfigFile _controllerFromFile({
     required List<FileSystemEntity> configFiles,
   }) {
-    print(configFiles.length);
-    
     if (configFiles.isEmpty) {
       logger
         ..info(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:args/src/arg_results.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:meta/meta.dart';
 
@@ -29,7 +30,7 @@ abstract class ConfigFile {
   static Iterable<FileSystemEntity> get configFilesInCurrentDir =>
       Directory('.').listSync().where(
         (file) {
-          final fileName = file.path.split('/').last;
+          final fileName = file.fileNameOnly;
 
           return _controllers.containsKey(fileName);
         },
@@ -39,9 +40,9 @@ abstract class ConfigFile {
 
   File get configFileRef;
 
-  String get configFileExtension => configFileRef.path.split('.').last;
+  // String get configFileExtension => configFileRef.path.split('.').last;
 
-  String get configFileName => configFileRef.path.split('/').last;
+  String get configFileName => configFileRef.fileNameOnly;
 
   Future<Map<dynamic, dynamic>> parsed();
 
@@ -154,8 +155,8 @@ abstract class ConfigFile {
 
   Future<void> writeNewConfig(Map<String, dynamic> config);
 
-  static ConfigFile controllerFromFile(FileSystemEntity first) {
-    final fileName = first.path.split('/').last;
+  static ConfigFile controllerFromFile(FileSystemEntity file) {
+    final fileName = file.fileNameOnly;
 
     return _controllers[fileName]!;
   }

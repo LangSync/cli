@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/utils.dart';
 import 'package:mason_logger/mason_logger.dart';
+import 'package:path/path.dart';
 
 final randomframesToUse = utils.randomLoadingFrames();
 
@@ -107,4 +109,8 @@ extension DateExt on DateTime {
   String toHumanReadable() {
     return '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}/${year.toString().padLeft(2, '0')} ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:${second.toString().padLeft(2, '0')}';
   }
+}
+
+extension FileSystemEntityExt on FileSystemEntity {
+  String get fileNameOnly => basename(path);
 }

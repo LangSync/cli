@@ -20,6 +20,10 @@ the context of your original one(s).
 
 **As example**, taking a mobile app that supports only the English laungage, which saves all its English texts & strings in a `en.json` file, <a href="https://langsync.app" target="_blank">LangSync</a> can literally take it, Then provides any other languages localization & translations like `ar.json`, `zh.json`, `ru.json`... and setting it in your project by runinng only a single command.
 
+## Install
+Check our documentation for installing LangSync CLI on Windows, Linux, MacOS [from here](https://docs.langsync.app/installation).
+
+Find the full documentation as well [here](https://docs.langsync.app).
 ## Key Features
 
 - **AI Powered**: LangSync harnesses the immense power of AI to provide you with unparalleled localization capabilities. Our AI-powered solution ensures that your software seamlessly adapts to its specific context, making your software truly global.

@@ -46,9 +46,20 @@ dart pub global activate langsync
 
 ### Installation with stanalone binary
 
-Check our documentation for installing LangSync CLI on Windows, Linux, MacOS [from here](https://docs.langsync.app/installation).
+Check this guide for installing LangSync CLI on Windows, Linux, MacOS [from here](https://docs.langsync.app/installation).
 
-Find the full documentation as well [here](https://docs.langsync.app).
+## Full Documentation
+
+The full documentation of LangSync is located [here](https://docs.langsync.app), it covers anything you will need to get started with LangSync, including:
+
+- Installation
+- Usage
+- Configuration
+- Supported Languages
+- Supported File Formats
+- Much more
+
+[Full Documentation](https://docs.langsync.app)
 
 ## Key Features
 

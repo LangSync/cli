@@ -38,7 +38,6 @@ https://github.com/LangSync/LangSync-CLI/assets/25140579/951c07cb-4608-406d-9bd8
 if you have dart already installed in your OS, you can install langsync directly by running the following command in your Terminal/PowerShell:
 
 ```
-# 📦 Install the LangSync cli from source
 dart pub global activate langsync
 ```
 

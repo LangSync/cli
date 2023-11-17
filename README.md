@@ -251,3 +251,20 @@ These are the content of the new localization files:
 ```
 
 </br>
+
+## Contributing
+
+We welcome contributions to LangSync CLI, you can contribute by:
+- Reporting a bug
+- Fixing a bug
+- Adding a new feature
+- Improving the documentation
+- Improving the code quality
+- Improving the performance
+- Improving the user experience
+- Pretty much anything else you can think of.
+
+## License
+
+LangSync CLI is licensed under the [MIT License](https://github.com/LangSync/cli/blob/main/LICENSE).
+

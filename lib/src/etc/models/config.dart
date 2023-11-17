@@ -15,7 +15,7 @@ class LangSyncConfig extends Equatable {
     final targetField = langsyncMapField['target'];
 
     final target = targetField is YamlList
-        ? (targetField as YamlList).nodes.map((e) => e.value as String)
+        ? targetField.nodes.map((e) => e.value as String)
         : (targetField as List<dynamic>).map((e) => e as String);
 
     return LangSyncConfig(

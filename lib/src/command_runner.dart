@@ -1,11 +1,9 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:cli_completion/cli_completion.dart';
-import 'package:langsync/src/commands/commands.dart';
 import 'package:langsync/src/commands/config_command/config_command.dart';
 import 'package:langsync/src/commands/debug_info/debug_info.dart';
 import 'package:langsync/src/commands/start_command/start_command.dart';
-import 'package:langsync/src/commands/supported_laungages_command/supported_laungages_command.dart';
 import 'package:langsync/src/etc/utils.dart';
 import 'package:langsync/src/version.dart';
 import 'package:mason_logger/mason_logger.dart';

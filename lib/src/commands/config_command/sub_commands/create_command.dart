@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:langsync/src/etc/controllers/config_file.dart';
-import 'package:langsync/src/etc/controllers/json.dart';
-import 'package:langsync/src/etc/controllers/yaml.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
@@ -60,7 +58,9 @@ class ConfigCreateCommand extends Command<int> {
   }
 
   Future<int> _requestToOverwrite(
-      File file, ConfigFile configFileController) async {
+    File file,
+    ConfigFile configFileController,
+  ) async {
     final confirmOverwrite = logger.confirm('Do you want to overwrite it?');
 
     if (confirmOverwrite) {

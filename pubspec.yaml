@@ -1,7 +1,8 @@
 name: langsync
 description: A Very Good Project created by Very Good CLI.
 version: 0.9.4
-publish_to: none
+homepage: https://langsync.app
+repository: https://github.com/LangSync/cli
 
 environment:
   sdk: ">=2.19.0 <4.0.0"

@@ -34,7 +34,8 @@ class InfoCommand extends Command<int> {
     if (apiKey == null) {
       logger
         ..info(
-            'You are not authenticated, please provide an API key to authenticate.')
+          'You are not authenticated, please provide an API key to authenticate.',
+        )
         ..docsInfo(path: '/cli-usage/auth');
 
       return ExitCode.usage.code;

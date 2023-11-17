@@ -75,7 +75,8 @@ class StartCommand extends Command<int> {
       configFile.validateConfigFields(parsedConfig);
 
       configFilesValidationProgress.complete(
-          'Your ${configFile.configFileName} file and configuration are valid.');
+        'Your ${configFile.configFileName} file and configuration are valid.',
+      );
     } catch (e, stacktrace) {
       logger.customErr(
         progress: configFilesValidationProgress,

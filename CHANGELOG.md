@@ -1,5 +1,10 @@
 # ChangeLogs
 
+## 0.9.4
+
+- Bug Fixes
+- Minor behavior changes.
+- Hiding some beta features for the release.
 
 ## 0.8.1
 

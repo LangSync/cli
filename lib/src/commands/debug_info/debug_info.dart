@@ -27,7 +27,7 @@ class DebugInfoCommand extends Command<int> {
 
     final asEntriesList = debugFields.entries.toList();
 
-    for (int index = 0; index < debugFields.length; index++) {
+    for (var index = 0; index < debugFields.length; index++) {
       final current = asEntriesList[index];
 
       logger.info('${current.key}: ${current.value}');

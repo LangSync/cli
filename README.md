@@ -7,6 +7,9 @@
 
 <br>
 
+
+
+
 <a href="https://langsync.app" target="_blank">
   LangSync
 </a> is an AI powered Command Line Interface (CLI) tool that allows your software
@@ -16,6 +19,15 @@ it generates very accurate & effective new laungages localizations files that ma
 the context of your original one(s).
 
 </br>
+
+## Demo Video
+
+<p align="center">
+  
+https://github.com/LangSync/LangSync-CLI/assets/25140579/951c07cb-4608-406d-9bd8-2bddc6c4fa8e
+
+</p>
+
 </br>
 
 **As example**, taking a mobile app that supports only the English laungage, which saves all its English texts & strings in a `en.json` file, <a href="https://langsync.app" target="_blank">LangSync</a> can literally take it, Then provides any other languages localization & translations like `ar.json`, `zh.json`, `ru.json`... and setting it in your project by runinng only a single command.

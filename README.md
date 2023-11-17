@@ -34,17 +34,20 @@ https://github.com/LangSync/LangSync-CLI/assets/25140579/951c07cb-4608-406d-9bd8
 
 ## Install
 
-### Installation with Dart 
+### Installation with Dart
+
 if you have dart already installed in your OS, you can install langsync directly by running the following command in your Terminal/PowerShell:
 
-```
+```bash
 dart pub global activate langsync
 ```
 
 ### Installation with stanalone binary
+
 Check our documentation for installing LangSync CLI on Windows, Linux, MacOS [from here](https://docs.langsync.app/installation).
 
 Find the full documentation as well [here](https://docs.langsync.app).
+
 ## Key Features
 
 - **AI Powered**: LangSync harnesses the immense power of AI to provide you with unparalleled localization capabilities. Our AI-powered solution ensures that your software seamlessly adapts to its specific context, making your software truly global.

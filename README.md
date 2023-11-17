@@ -5,18 +5,18 @@
 <img src="https://docs.langsync.app/img/brand/colored_bg.png" style="border-radius:100%;width:125px;height:125px;"/>
 </p>
 
-<br>
-
-
-
+</br>
 
 <a href="https://langsync.app" target="_blank">
+
   LangSync
 </a> is an AI powered Command Line Interface (CLI) tool that allows your software
 (apps, websites, games, projects...) to target the global market by expanding your
 original JSON localization file(s), And, with the help of a powerful set of AI engines,
 it generates very accurate & effective new laungages localizations files that matches
 the context of your original one(s).
+
+**Help get this project grow and get discovered by other developers by starring it ⭐**
 
 </br>
 

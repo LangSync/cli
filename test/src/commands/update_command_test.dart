@@ -22,8 +22,11 @@ void main() {
 
   group('update', () {
     late PubUpdater pubUpdater;
+
     late Logger logger;
+
     late ProcessResult processResult;
+
     late LangsyncCommandRunner commandRunner;
 
     setUp(() {

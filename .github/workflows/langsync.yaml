@@ -53,3 +53,4 @@ jobs:
 
       - name: 🔎 Verify version
         run: dart run test --run-skipped -t version-verify
+

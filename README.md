@@ -16,6 +16,8 @@ original JSON localization file(s), And, with the help of a powerful set of AI e
 it generates very accurate & effective new laungages localizations files that matches
 the context of your original one(s).
 
+</br>
+
 **Help get this project grow and get discovered by other developers by starring it ⭐**
 
 </br>

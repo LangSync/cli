@@ -114,3 +114,9 @@ extension DateExt on DateTime {
 extension FileSystemEntityExt on FileSystemEntity {
   String get fileNameOnly => basename(path);
 }
+
+extension StringExt on String {
+  String tr() {
+    return this;
+  }
+}

@@ -16,12 +16,14 @@ class ConfigCreateCommand extends Command<int> {
         'json',
         help: 'Create a JSON file for the configuration (langsync.json)',
         negatable: false,
+        abbr: 'j',
       )
       ..addFlag(
         'yaml',
-        help:
-            'Create a YAML file for the configuration (langsync.yaml or langsync.yml)',
+        help: 'Create a YAML file for the configuration (langsync.yaml)',
         negatable: false,
+        abbr: 'y',
+        aliases: ['yml'],
       );
   }
 

@@ -30,7 +30,7 @@ https://github.com/LangSync/LangSync-CLI/assets/25140579/951c07cb-4608-406d-9bd8
 
 </br>
 
-**As example**, taking a mobile app that supports only the English laungage, which saves all its English texts & strings in a `en.json` file, <a href="https://langsync.app" target="_blank">LangSync</a> can literally take it, Then provides any other languages localization & translations like `ar.json`, `zh.json`, `ru.json`... and setting it in your project by runinng only a single command.
+**As example**, taking a mobile app project that supports only the English laungage, which saves all its English texts & strings in a `en.json` file, <a href="https://langsync.app" target="_blank">LangSync</a> can literally take it, process it, then provides any other languages localization & translations like `ar.json`, `zh.json`, `ru.json`... and setting it in your project by runinng only a single command.
 
 ## Install
 

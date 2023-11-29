@@ -2,7 +2,9 @@
 # LangSync
 
 <p align="center">
+
 <img src="https://docs.langsync.app/img/brand/colored_bg.png" style="border-radius:100%;width:125px;height:125px;"/>
+
 </p>
 
 </br>

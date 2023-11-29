@@ -2,9 +2,11 @@
 
 ## 0.9.4
 
+- Major optimization of the speed of the localization process.
+- Add support for JSON configuration files. (default is YAML)
+- Optimization in the AI engine.
 - Bug Fixes
 - Minor behavior changes.
-- Hiding some beta features for the release.
 
 ## 0.8.1
 

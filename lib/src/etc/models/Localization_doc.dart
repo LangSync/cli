@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class LocalizationDoc extends Equatable {
   const LocalizationDoc({
     required this.createdAt,
-    required this.partitionId,
+    required this.operationId,
     required this.jsonPartsLength,
     this.outputLangs,
   });
@@ -11,7 +11,7 @@ class LocalizationDoc extends Equatable {
   factory LocalizationDoc.fromJson(Map<String, dynamic> json) {
     return LocalizationDoc(
       createdAt: DateTime.parse(json['createdAt'] as String),
-      partitionId: json['partitionId'] as String,
+      operationId: json['operationId'] as String,
       jsonPartsLength: json['jsonPartsLength'] is int
           ? json['jsonPartsLength'] as int
           : int.parse(json['jsonPartsLength'] as String),
@@ -24,14 +24,14 @@ class LocalizationDoc extends Equatable {
   }
 
   final DateTime createdAt;
-  final String partitionId;
+  final String operationId;
   final int jsonPartsLength;
   final List<String>? outputLangs;
 
   @override
   List<Object?> get props => [
         createdAt,
-        partitionId,
+        operationId,
         jsonPartsLength,
         outputLangs,
       ];

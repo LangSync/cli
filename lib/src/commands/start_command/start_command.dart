@@ -81,6 +81,7 @@ class StartCommand extends Command<int> {
       logger.customErr(
         progress: configFilesValidationProgress,
         update: 'Something went wrong while validating your config file.',
+        stacktrace: stacktrace,
         error: e,
       );
 
@@ -119,14 +120,14 @@ class StartCommand extends Command<int> {
       logger
         ..info('\n')
         ..warn(
-          'The ID of this operation is: ${jsonPartitionRes.partitionId}. in case of any issues, please contact us providing this ID so we can help.',
+          'The ID of this operation is: ${jsonPartitionRes.operationId}. in case of any issues, please contact us providing this ID so we can help.',
         );
 
       final result = await aIProcessResult(
         apiKey: apiKey,
         langs: asConfig.langs,
         languageLocalizationMaxDelay: asConfig.languageLocalizationMaxDelay,
-        partitionId: jsonPartitionRes.partitionId,
+        operationId: jsonPartitionRes.operationId,
       );
 
       logger
@@ -137,14 +138,14 @@ class StartCommand extends Command<int> {
 
       final outputList =
           await NetClient.instance.retrieveJsonPartitionWithOutput(
-        outputPartitionId: result.outputPartitionId,
+        outputoperationId: result.outputoperationId,
         apiKey: apiKey,
       );
 
       await _writeNewLocalizationFiles(
         outputList: outputList,
         outputDir: Directory(asConfig.outputDir),
-        partitionId: jsonPartitionRes.partitionId,
+        operationId: jsonPartitionRes.operationId,
       );
 
       logger.success('All done!');
@@ -153,6 +154,7 @@ class StartCommand extends Command<int> {
     } catch (e, stacktrace) {
       logger.customErr(
         error: e,
+        stacktrace: stacktrace,
         progress: savingSourceFileProgress,
         update: 'Something went wrong, try again!',
       );
@@ -197,7 +199,7 @@ class StartCommand extends Command<int> {
   Future<void> _writeNewLocalizationFiles({
     required List<LangOutput> outputList,
     required Directory outputDir,
-    required String partitionId,
+    required String operationId,
   }) async {
     for (var index = 0; index < outputList.length; index++) {
       final current = outputList[index];
@@ -224,7 +226,7 @@ class StartCommand extends Command<int> {
             {
               'message':
                   'Please, if you think that this is an unexpected bug in LangSync, contact us so we can help',
-              'partitionId': partitionId,
+              'operationId': operationId,
               'processedResponse': current.jsonFormattedResponse,
               'target_language': current.lang,
               'success_file_name': '${current.lang}.json',
@@ -265,7 +267,7 @@ class StartCommand extends Command<int> {
   Future<LangSyncServerResultSSE> aIProcessResult({
     required String apiKey,
     required Iterable<String> langs,
-    required String partitionId,
+    required String operationId,
     required int? languageLocalizationMaxDelay,
   }) async {
     final completer = Completer<LangSyncServerResultSSE>();
@@ -273,7 +275,7 @@ class StartCommand extends Command<int> {
     final processStream = NetClient.instance.startAIProcess(
       apiKey: apiKey,
       langs: langs,
-      operationId: partitionId,
+      operationId: operationId,
       languageLocalizationMaxDelay: languageLocalizationMaxDelay,
     );
 

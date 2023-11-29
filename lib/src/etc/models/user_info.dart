@@ -48,7 +48,7 @@ class UserInfo extends Equatable {
       'Available API keys': apiKeysLength,
       'Processed Localizations': localizationDocs.length,
       'Most Recent Localization ID': localizationDocs.isNotEmpty
-          ? localizationDocs.last.partitionId
+          ? localizationDocs.last.operationId
           : 'You have no processed localizations.',
       'Most Recent Localization Date': localizationDocs.isNotEmpty
           ? '${localizationDocs.last.createdAt.toProperHumanReadableDate()} - ${localizationDocs.last.createdAt.toIso8601String()}'

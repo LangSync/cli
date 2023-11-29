@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:langsync/src/etc/models/api_key_res.dart';
 import 'package:langsync/src/etc/models/lang_output.dart';
-import 'package:langsync/src/etc/models/partition.dart';
+import 'package:langsync/src/etc/models/operation.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
 import 'package:langsync/src/etc/models/user_info.dart';
 import 'package:langsync/src/etc/networking/client_boilerplate.dart';
@@ -61,7 +61,7 @@ class NetClient extends NetClientBoilerPlate {
   }
 
   Future<List<LangOutput>> retrieveJsonPartitionWithOutput({
-    required String outputPartitionId,
+    required String outputoperationId,
     required String apiKey,
   }) {
     return makeRes(
@@ -71,7 +71,7 @@ class NetClient extends NetClientBoilerPlate {
         'Authorization': 'Bearer ${apiKey}',
       },
       {
-        'operationId': outputPartitionId,
+        'operationId': outputoperationId,
       },
       (res) {
         final output = (res['output'] as List)

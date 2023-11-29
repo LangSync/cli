@@ -71,11 +71,13 @@ extension LoggerExt on Logger {
     required Progress progress,
     required String update,
     required Object error,
+    StackTrace? stacktrace,
   }) {
     info('\n');
 
     if (utils.isDebugMode) {
       progress.fail(error.toString());
+      if (stacktrace != null) info(stacktrace.toString());
     } else {
       progress.fail(update);
     }

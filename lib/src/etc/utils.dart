@@ -8,11 +8,11 @@ import 'package:mason_logger/mason_logger.dart';
 final utils = Utils();
 
 class Utils {
-  final isDebugMode = false;
+  final isDebugMode = true;
 
 //! notice the "/"
   String get baseUrl =>
-      isDebugMode ? 'http://192.168.0.4:5559' : 'http://api.langsync.app';
+      isDebugMode ? 'http://192.168.0.11:5559' : 'http://api.langsync.app';
 
   bool isValidApiKeyFormatted(String apiKey) {
     final isNotEmpty = apiKey.isNotEmpty;

@@ -46,10 +46,10 @@ class LangSyncServerSSE extends Equatable {
 }
 
 class LangSyncServerResultSSE extends LangSyncServerSSE {
-  final String outputPartitionId;
+  final String outputoperationId;
 
   const LangSyncServerResultSSE({
-    required this.outputPartitionId,
+    required this.outputoperationId,
     required super.message,
     required super.type,
     required super.statusCode,
@@ -61,7 +61,7 @@ class LangSyncServerResultSSE extends LangSyncServerSSE {
     final decoded = jsonDecode(message) as Map<String, dynamic>;
 
     return LangSyncServerResultSSE(
-      outputPartitionId: decoded['partitionId'] as String,
+      outputoperationId: decoded['operationId'] as String,
       message: message,
       statusCode: res['statusCode'] as int,
       type: // this is hardcoded, butsince we are sure that it is correct.
@@ -74,7 +74,7 @@ class LangSyncServerResultSSE extends LangSyncServerSSE {
 
   @override
   List<Object?> get props => [
-        outputPartitionId,
+        outputoperationId,
         super.message,
         super.type,
         super.statusCode,

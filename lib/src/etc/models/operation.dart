@@ -2,20 +2,20 @@
 import 'package:equatable/equatable.dart';
 
 class PartitionResponse extends Equatable {
-  final String partitionId;
+  final String operationId;
 
   const PartitionResponse({
-    required this.partitionId,
+    required this.operationId,
   });
 
   factory PartitionResponse.fromJson(Map<String, dynamic> json) {
     return PartitionResponse(
-      partitionId: json['partitionId'] as String,
+      operationId: json['operationId'] as String,
     );
   }
 
   @override
   List<Object?> get props => [
-        partitionId,
+        operationId,
       ];
 }

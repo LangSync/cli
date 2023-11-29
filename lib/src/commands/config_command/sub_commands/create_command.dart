@@ -190,6 +190,7 @@ class ConfigCreateCommand extends Command<int> {
         progress: creationProgress,
         update:
             'Something went wrong while creating the ${configFileController.configFileName} file, please try again.',
+        stacktrace: stacktrace,
       );
 
       try {

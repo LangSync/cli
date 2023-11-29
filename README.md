@@ -18,7 +18,7 @@ the context of your original one(s).
 
 </br>
 
-## Installation Made Easy
+## 🚀 Installation Made Easy
 
 
  embark on your LangSync journey, ensure you have the Dart SDK installed on your machine (compatible with Windows, macOS, and Linux). If you haven't installed Dart yet, follow the steps outlined in [Installing the Dart SDK.](https://dart.dev/get-dart#install).
@@ -35,7 +35,7 @@ And Boom, you have it. Confirm the installation by checking the version of LangS
 langsync --version
 ```
 
-## Dive into Documentation
+## 📘 Dive into Documentation
 
 Explore the comprehensive [documentation](https://docs.langsync.app/) for LangSync, covering everything you need to kickstart your experience:
 
@@ -48,7 +48,7 @@ Explore the comprehensive [documentation](https://docs.langsync.app/) for LangSy
 [Full Documentation](https://docs.langsync.app)
 
 
-## Witness LangSync in Action
+## 📹 Witness LangSync in Action
 
 <p align="center">
   
@@ -57,7 +57,7 @@ https://github.com/LangSync/LangSync-CLI/assets/25140579/951c07cb-4608-406d-9bd8
 </p>
 
 
-## Contributing
+## 🤝 Contributing
 
 Contributions to LangSync CLI are highly encouraged. You can contribute by:
 
@@ -70,6 +70,6 @@ Contributions to LangSync CLI are highly encouraged. You can contribute by:
 - Enhancing user experience
 - And anything else you can think of!
 
-## License
+## 📄 License
 LangSync CLI operates under the [MIT License](https://github.com/LangSync/cli/blob/main/LICENSE). Your journey with LangSync begins now—unlock the potential of global software localization!
 

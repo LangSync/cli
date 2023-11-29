@@ -108,7 +108,7 @@ class StartCommand extends Command<int> {
     );
 
     try {
-      final jsonPartitionRes = await NetClient.instance.savePartitionsJson(
+      final jsonPartitionRes = await NetClient.instance.saveFile(
         apiKey: apiKey,
         sourceFile: File(asConfig.sourceFile),
       );
@@ -138,6 +138,7 @@ class StartCommand extends Command<int> {
       final outputList =
           await NetClient.instance.retrieveJsonPartitionWithOutput(
         outputPartitionId: result.outputPartitionId,
+        apiKey: apiKey,
       );
 
       await _writeNewLocalizationFiles(
@@ -272,7 +273,7 @@ class StartCommand extends Command<int> {
     final processStream = NetClient.instance.startAIProcess(
       apiKey: apiKey,
       langs: langs,
-      jsonPartitionId: partitionId,
+      operationId: partitionId,
       languageLocalizationMaxDelay: languageLocalizationMaxDelay,
     );
 

@@ -17,34 +17,10 @@ class NetClient extends NetClientBoilerPlate {
 
   static NetClient get instance => _instance;
 
-  Future<UserInfo> userInfo({required String apiKey}) {
-    return makeRes<UserInfo>('user', 'GET', {
-      'Authorization': 'Bearer $apiKey',
-    }, {}, (res) {
-      return UserInfo.fromJson(res);
-    });
-  }
-
-  Future<Map<String, bool>> supportsLang(List<String> lang) {
-    return makeRes<Map<String, bool>>('/langs-support', 'POST', {}, {
-      'langs': lang,
-    }, (res) {
-      final map = <String, bool>{};
-
-      final list = (res['checkResultList'] as List<dynamic>).cast<String>();
-
-      for (final element in list) {
-        map[element] = true;
-      }
-
-      return map;
-    });
-  }
-
   Stream<List<LangSyncServerSSE>> startAIProcess({
     required Iterable<String> langs,
     required String apiKey,
-    required String jsonPartitionId,
+    required String operationId,
     required int? languageLocalizationMaxDelay,
     bool includeOutput = false,
   }) {
@@ -53,7 +29,7 @@ class NetClient extends NetClientBoilerPlate {
       'POST',
       {'Authorization': 'Bearer $apiKey'},
       {
-        'jsonPartitionsId': jsonPartitionId,
+        'operationId': operationId,
         'langs': langs.toList(),
         'includeOutput': includeOutput,
         'languageLocalizationMaxDelay': languageLocalizationMaxDelay,
@@ -71,12 +47,12 @@ class NetClient extends NetClientBoilerPlate {
     );
   }
 
-  Future<PartitionResponse> savePartitionsJson({
+  Future<PartitionResponse> saveFile({
     required String apiKey,
     required File sourceFile,
   }) {
     return makeMultiPartRes(
-      '/save-partitioned-json-of-user',
+      'json/save-file',
       'post',
       {'Authorization': 'Bearer $apiKey'},
       {'sourceFile': sourceFile},
@@ -84,36 +60,18 @@ class NetClient extends NetClientBoilerPlate {
     );
   }
 
-  Future<bool> checkWetherApiKeyExistsForSomeUser({
-    required String apiKey,
-  }) async {
-    return makeRes(
-      '/verify-api-key-existence',
-      'GET',
-      {'Authorization': 'Bearer $apiKey'},
-      {},
-      (res) {
-        final exists = res['exists'] as bool?;
-
-        if (exists == null) {
-          throw Exception(
-            "the 'exists' field does not exist in the response of this API endpoint",
-          );
-        }
-        return exists;
-      },
-    );
-  }
-
   Future<List<LangOutput>> retrieveJsonPartitionWithOutput({
     required String outputPartitionId,
+    required String apiKey,
   }) {
     return makeRes(
-      '/get-partitioned-json-of-user',
+      '/file-operation-of-user',
       'GET',
-      {},
       {
-        'jsonPartitionsId': outputPartitionId,
+        'Authorization': 'Bearer ${apiKey}',
+      },
+      {
+        'operationId': outputPartitionId,
       },
       (res) {
         final output = (res['output'] as List)

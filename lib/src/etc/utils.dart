@@ -21,31 +21,6 @@ class Utils {
     return isNotEmpty && hasValidLength;
   }
 
-  Future<bool> doesApiKeyExistsForSomeUser({
-    required String apiKey,
-    required Logger logger,
-  }) async {
-    final apiKeyCheckProgress =
-        logger.customProgress('starting api key check..');
-
-    try {
-      final doesApiKeyExistsForSomeUser =
-          await NetClient.instance.checkWetherApiKeyExistsForSomeUser(
-        apiKey: apiKey,
-      );
-
-      return doesApiKeyExistsForSomeUser;
-    } catch (e, stacktrace) {
-      logger.customErr(
-        progress: apiKeyCheckProgress,
-        update: '',
-        error: stacktrace,
-      );
-
-      return false;
-    }
-  }
-
   Directory localeDataDir() {
     if (Platform.isWindows) {
       final appDataDir = Directory(Platform.environment['APPDATA']!);

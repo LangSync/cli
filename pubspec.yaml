@@ -1,6 +1,6 @@
 name: langsync
 description: an AI powered localization tool for any platform and language.
-version: 0.9.51
+version: 0.9.52
 homepage: https://langsync.app
 repository: https://github.com/LangSync/cli
 

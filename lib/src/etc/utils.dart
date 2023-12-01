@@ -4,7 +4,7 @@ import 'dart:math';
 final utils = Utils();
 
 class Utils {
-  final isDebugMode = true;
+  final isDebugMode = false;
 
 //! notice the "/"
   String get baseUrl =>

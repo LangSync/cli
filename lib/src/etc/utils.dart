@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 
-
 final utils = Utils();
 
 class Utils {

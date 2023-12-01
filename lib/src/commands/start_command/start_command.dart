@@ -190,24 +190,24 @@ class StartCommand extends Command<int> {
     }
   }
 
-  void _writeResultToFiles({
-    required Map<String, JsonContentMap> res,
-    required Directory outputDir,
-  }) {
-    final progress = logger.customProgress('Writing results to files..');
+  // void _writeResultToFiles({
+  //   required Map<String, JsonContentMap> res,
+  //   required Directory outputDir,
+  // }) {
+  //   final progress = logger.customProgress('Writing results to files..');
 
-    res.forEach((key, value) {
-      final file = File('${outputDir.path}/$key.json');
+  //   res.forEach((key, value) {
+  //     final file = File('${outputDir.path}/$key.json');
 
-      if (!file.existsSync()) {
-        file.createSync(recursive: true);
-      }
+  //     if (!file.existsSync()) {
+  //       file.createSync(recursive: true);
+  //     }
 
-      progress.update('Writing $key.json');
+  //     progress.update('Writing $key.json');
 
-      file.writeAsStringSync(value.toPrettyJson());
-    });
-  }
+  //     file.writeAsStringSync(value.toPrettyJson());
+  //   });
+  // }
 
   Future<void> _writeNewLocalizationFiles({
     required List<LangOutput> outputList,

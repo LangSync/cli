@@ -20,7 +20,9 @@ class NetClient extends NetClientBoilerPlate {
     required Iterable<String> langs,
     required String apiKey,
     required String operationId,
-    required int? languageLocalizationMaxDelay, required String? instruction, bool includeOutput = false,
+    required int? languageLocalizationMaxDelay,
+    required String? instruction,
+    bool includeOutput = false,
   }) {
     return sseStreamReq<List<LangSyncServerSSE>>(
       '/process-translation',

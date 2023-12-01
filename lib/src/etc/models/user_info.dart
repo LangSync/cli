@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:langsync/src/etc/extensions.dart';
-import 'package:langsync/src/etc/models/Localization_doc.dart';
+import 'package:langsync/src/etc/models/localization_doc.dart';
 
 class UserInfo extends Equatable {
   const UserInfo({

@@ -33,6 +33,6 @@
 - Bug Fixes
 - Minor behavior changes.
 
-## 0.9.6
+## 0.9.5
 
 - Added support for the AI instruction field which allow for your own custom instructions to be executed during the localization process.

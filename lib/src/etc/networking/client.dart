@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:langsync/src/etc/models/api_key_res.dart';
-import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/models/lang_output.dart';
 import 'package:langsync/src/etc/models/operation.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
-import 'package:langsync/src/etc/models/user_info.dart';
 import 'package:langsync/src/etc/networking/client_boilerplate.dart';
 import 'package:langsync/src/version.dart';
 
@@ -22,9 +20,7 @@ class NetClient extends NetClientBoilerPlate {
     required Iterable<String> langs,
     required String apiKey,
     required String operationId,
-    bool includeOutput = false,
-    required int? languageLocalizationMaxDelay,
-    required String? instruction,
+    required int? languageLocalizationMaxDelay, required String? instruction, bool includeOutput = false,
   }) {
     return sseStreamReq<List<LangSyncServerSSE>>(
       '/process-translation',
@@ -72,7 +68,7 @@ class NetClient extends NetClientBoilerPlate {
       '/file-operation-of-user',
       'GET',
       {
-        'Authorization': 'Bearer ${apiKey}',
+        'Authorization': 'Bearer $apiKey',
       },
       {
         'operationId': outputoperationId,

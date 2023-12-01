@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:langsync/src/etc/extensions.dart';
 import 'package:yaml/yaml.dart';
 
 class LangSyncConfig extends Equatable {

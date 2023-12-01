@@ -1,13 +1,5 @@
 # ChangeLogs
 
-## 0.9.4
-
-- Major optimization of the speed of the localization process.
-- Add support for JSON configuration files. (default is YAML)
-- Optimization in the AI engine.
-- Bug Fixes
-- Minor behavior changes.
-
 ## 0.8.1
 
 - Changed the account creation command from `apiKey` to `create` for more consistency.
@@ -35,3 +27,12 @@
 ## 0.9.43
 
 - Exposed fully FREE beta version, for BETA testing and feedbacks.
+- Major optimization of the speed of the localization process.
+- Add support for JSON configuration files. (default is YAML)
+- Optimization in the AI engine.
+- Bug Fixes
+- Minor behavior changes.
+
+## 0.9.6
+
+- Added support for the AI instruction field which allow for your own custom instructions to be executed during the localization process.

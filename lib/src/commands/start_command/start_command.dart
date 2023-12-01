@@ -128,6 +128,7 @@ class StartCommand extends Command<int> {
         langs: asConfig.langs,
         languageLocalizationMaxDelay: asConfig.languageLocalizationMaxDelay,
         operationId: jsonPartitionRes.operationId,
+        instruction: asConfig.instruction,
       );
 
       logger
@@ -269,6 +270,7 @@ class StartCommand extends Command<int> {
     required Iterable<String> langs,
     required String operationId,
     required int? languageLocalizationMaxDelay,
+    required String? instruction,
   }) async {
     final completer = Completer<LangSyncServerResultSSE>();
 
@@ -277,6 +279,7 @@ class StartCommand extends Command<int> {
       langs: langs,
       operationId: operationId,
       languageLocalizationMaxDelay: languageLocalizationMaxDelay,
+      instruction: instruction,
     );
 
     LangSyncServerResultSSE? resultSSE;

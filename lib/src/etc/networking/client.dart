@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:langsync/src/etc/models/api_key_res.dart';
+import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/models/lang_output.dart';
 import 'package:langsync/src/etc/models/operation.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
@@ -21,8 +22,9 @@ class NetClient extends NetClientBoilerPlate {
     required Iterable<String> langs,
     required String apiKey,
     required String operationId,
-    required int? languageLocalizationMaxDelay,
     bool includeOutput = false,
+    required int? languageLocalizationMaxDelay,
+    required String? instruction,
   }) {
     return sseStreamReq<List<LangSyncServerSSE>>(
       '/process-translation',
@@ -33,6 +35,8 @@ class NetClient extends NetClientBoilerPlate {
         'langs': langs.toList(),
         'includeOutput': includeOutput,
         'languageLocalizationMaxDelay': languageLocalizationMaxDelay,
+        if (instruction != null && instruction.isNotEmpty)
+          'instruction': instruction,
       },
       (res) {
         final split = res.split('\n\n').where((element) => element.isNotEmpty);

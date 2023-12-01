@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:langsync/src/etc/controllers/config_file.dart';
+import 'package:langsync/src/etc/extensions.dart';
 import 'package:yaml/yaml.dart' as yaml;
 
 class YamlController extends ConfigFile {
@@ -30,14 +31,17 @@ class YamlController extends ConfigFile {
       config,
       callback: (entry) async {
         if (entry.value is String) {
-          await super.writeToConfigFile(
-            "\n  ${entry.key}: '${entry.value}' \n",
-          );
-        } else if (entry.value is List) {
-          await super.writeToConfigFile(
-            '\n  ${entry.key}: ${entry.value} \n',
-          );
+          if ((entry.value as String).isPathToFileOrFolder()) {
+            await super.writeToConfigFile(
+              "\n  ${entry.key}: '${entry.value}' \n",
+            );
+            return;
+          }
         }
+
+        await super.writeToConfigFile(
+          '\n  ${entry.key}: ${entry.value} \n',
+        );
       },
     );
   }

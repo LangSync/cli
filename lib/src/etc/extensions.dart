@@ -121,4 +121,12 @@ extension StringExt on String {
   String tr() {
     return this;
   }
+
+  String ensureStringSymbol() {
+    return replaceAll("'", '"');
+  }
+
+  bool isPathToFileOrFolder() {
+    return File(this).existsSync() || Directory(this).existsSync();
+  }
 }

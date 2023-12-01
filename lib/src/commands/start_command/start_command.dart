@@ -97,7 +97,13 @@ class StartCommand extends Command<int> {
           ..warn(
             'This error has been reported to the LangSync team, we will definitely look into it!',
           );
-      } catch (e) {}
+      } catch (e) {
+        logger
+          ..info('\n')
+          ..warn(
+            'This error could not be reported to the LangSync team, please report it manually, see https://docs.langsync.app/bug_report',
+          );
+      }
 
       return ExitCode.config.code;
     }
@@ -172,7 +178,13 @@ class StartCommand extends Command<int> {
           ..warn(
             'This error has been reported to the LangSync team, we will definitely look into it!',
           );
-      } catch (e) {}
+      } catch (e) {
+        logger
+          ..info('\n')
+          ..warn(
+            'This error could not be reported to the LangSync team, please report it manually, see https://docs.langsync.app/bug_report',
+          );
+      }
 
       return ExitCode.software.code;
     }

@@ -7,7 +7,6 @@ import 'package:langsync/src/commands/start_command/start_command.dart';
 import 'package:langsync/src/etc/utils.dart';
 import 'package:langsync/src/version.dart';
 import 'package:mason_logger/mason_logger.dart';
-import 'package:pub_updater/pub_updater.dart';
 
 const executableName = 'langsync';
 const packageName = 'langsync';
@@ -29,9 +28,7 @@ class LangsyncCommandRunner extends CompletionCommandRunner<int> {
   /// {@macro langsync_command_runner}
   LangsyncCommandRunner({
     Logger? logger,
-    PubUpdater? pubUpdater,
   })  : _logger = logger ?? Logger(),
-        _pubUpdater = pubUpdater ?? PubUpdater(),
         super(executableName, description) {
     // Add root options and flags
     argParser
@@ -58,7 +55,6 @@ class LangsyncCommandRunner extends CompletionCommandRunner<int> {
   void printUsage() => _logger.info(usage);
 
   final Logger _logger;
-  final PubUpdater _pubUpdater;
 
   @override
   Future<int> run(Iterable<String> args) async {
@@ -124,30 +120,6 @@ class LangsyncCommandRunner extends CompletionCommandRunner<int> {
       exitCode = await super.runCommand(topLevelResults);
     }
 
-    // // Check for updates
-    // if (topLevelResults.command?.name != UpdateCommand.commandName) {
-    //   await _checkForUpdates();
-    // }
-
     return exitCode;
-  }
-
-  /// Checks if the current version (set by the build runner on the
-  /// version.dart file) is the most recent one. If not, show a prompt to the
-  /// user.
-  Future<void> _checkForUpdates() async {
-    try {
-      final latestVersion = await _pubUpdater.getLatestVersion(packageName);
-      final isUpToDate = packageVersion == latestVersion;
-      if (!isUpToDate) {
-        _logger
-          ..info('')
-          ..info(
-            '''
-${lightYellow.wrap('Update available!')} ${lightCyan.wrap(packageVersion)} \u2192 ${lightCyan.wrap(latestVersion)}
-Run ${lightCyan.wrap('$executableName update')} to update''',
-          );
-      }
-    } catch (_) {}
   }
 }

@@ -7,6 +7,8 @@ import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
 
+import '../../../etc/models/config.dart';
+
 class ConfigCreateCommand extends Command<int> {
   ConfigCreateCommand({
     required this.logger,
@@ -160,10 +162,18 @@ class ConfigCreateCommand extends Command<int> {
       return ExitCode.software.code;
     }
 
+    final instruction = logger.prompt(
+      'Enter your AI instruction (optional): ',
+    );
+
+    // Create the config with the given
     final config = configFileController.futureConfigToWrite(
-      outputDir: outputDir,
-      sourceLocalizationFilePath: sourceLocalizationFilePath,
-      targetLangsList: targetLangsList,
+      config: LangSyncConfig(
+        outputDir: outputDir,
+        sourceFile: sourceLocalizationFilePath,
+        langs: targetLangsList,
+        instruction: instruction,
+      ),
     );
 
     final creationProgress = logger.customProgress(

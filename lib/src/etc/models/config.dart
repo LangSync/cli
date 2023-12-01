@@ -7,6 +7,7 @@ class LangSyncConfig extends Equatable {
     required this.outputDir,
     required this.langs,
     this.languageLocalizationMaxDelay,
+    this.instruction,
   });
 
   factory LangSyncConfig.fromMap(Map<dynamic, dynamic> map) {
@@ -18,12 +19,17 @@ class LangSyncConfig extends Equatable {
         ? targetField.nodes.map((e) => e.value as String)
         : (targetField as List<dynamic>).map((e) => e as String);
 
+    final languageLocalizationMaxDelay =
+        langsyncMapField['languageLocalizationMaxDelay'] as int?;
+
+    final instruction = langsyncMapField['instruction'] as String?;
+
     return LangSyncConfig(
       sourceFile: langsyncMapField['source'] as String,
       outputDir: langsyncMapField['output'] as String,
       langs: target,
-      languageLocalizationMaxDelay:
-          (langsyncMapField['languageLocalizationMaxDelay'] as int?) ?? 450,
+      languageLocalizationMaxDelay: languageLocalizationMaxDelay ?? 450,
+      instruction: instruction,
     );
   }
 
@@ -31,6 +37,7 @@ class LangSyncConfig extends Equatable {
   final String outputDir;
   final Iterable<String> langs;
   final int? languageLocalizationMaxDelay;
+  final String? instruction;
 
   List<String> get langsJsonFiles => langs.map((e) => '$e.json').toList();
 
@@ -47,7 +54,9 @@ class LangSyncConfig extends Equatable {
       'source': sourceFile,
       'output': outputDir,
       'target': langs.toList(),
-      'languageLocalizationMaxDelay': languageLocalizationMaxDelay ?? 450,
+      'languageLocalizationMaxDelay': languageLocalizationMaxDelay ?? 200,
+      if (instruction != null && instruction!.isNotEmpty)
+        'instruction': instruction,
     };
   }
 }

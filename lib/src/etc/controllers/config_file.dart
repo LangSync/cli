@@ -118,17 +118,9 @@ abstract class ConfigFile {
   }
 
   Map<String, dynamic> futureConfigToWrite({
-    required String sourceLocalizationFilePath,
-    required String outputDir,
-    required Iterable<String> targetLangsList,
-    int? languageLocalizationMaxDelay,
+    required LangSyncConfig config,
   }) {
-    return LangSyncConfig(
-      sourceFile: sourceLocalizationFilePath,
-      outputDir: outputDir,
-      langs: targetLangsList,
-      languageLocalizationMaxDelay: languageLocalizationMaxDelay,
-    ).toMap();
+    return config.toMap();
   }
 
   void iterateAndLogConfig(Map<dynamic, dynamic> parsedYaml, Logger logger) {

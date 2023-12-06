@@ -1,7 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:yaml/yaml.dart';
 
+/// {@template langsync_config}
+/// The LangSync config model, it holds possible configurations that relates to the config file reference that will be read or/and write to.
+/// {@endtemplate}
 class LangSyncConfig extends Equatable {
+  /// {@macro langsync_config}
   const LangSyncConfig({
     required this.sourceFile,
     required this.outputDir,
@@ -10,6 +14,7 @@ class LangSyncConfig extends Equatable {
     this.instruction,
   });
 
+  /// Creates a [LangSyncConfig] from a [Map].
   factory LangSyncConfig.fromMap(Map<dynamic, dynamic> map) {
     final langsyncMapField = map['langsync'] as Map;
 
@@ -33,13 +38,20 @@ class LangSyncConfig extends Equatable {
     );
   }
 
+  /// The source localization file path.
   final String sourceFile;
-  final String outputDir;
-  final Iterable<String> langs;
-  final int? languageLocalizationMaxDelay;
-  final String? instruction;
 
-  List<String> get langsJsonFiles => langs.map((e) => '$e.json').toList();
+  /// The output directory path.
+  final String outputDir;
+
+  /// The target languages to generate localizations for.
+  final Iterable<String> langs;
+
+  /// The maximum language localization can take to be generated in seconds, if a language localization takes more than this value, it will be skipped.
+  final int? languageLocalizationMaxDelay;
+
+  /// The AI instruction to generate localizations, if any.
+  final String? instruction;
 
   @override
   List<Object?> get props => [
@@ -47,8 +59,10 @@ class LangSyncConfig extends Equatable {
         outputDir,
         langs,
         languageLocalizationMaxDelay,
+        instruction,
       ];
 
+  /// Converts the [LangSyncConfig] to a [Map].
   Map<String, dynamic> toMap() {
     return {
       'source': sourceFile,

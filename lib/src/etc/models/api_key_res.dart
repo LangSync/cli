@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+///! Scheduled for removal.
 class APIKeyResponse extends Equatable {
   const APIKeyResponse({
     required this.username,

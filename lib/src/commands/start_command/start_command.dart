@@ -140,7 +140,7 @@ class StartCommand extends Command<int> {
       logger
         ..info('\n')
         ..info(
-          'Generating localization files: ${asConfig.langsJsonFiles.join(", ")}.',
+          'Generating localization files: ${asConfig.langsJsonFiles().join(", ")}.',
         );
 
       final outputList =

@@ -117,6 +117,10 @@ extension FileSystemEntityExt on FileSystemEntity {
   String get fileNameOnly => basename(path);
 }
 
+extension IterbaleExt on LangSyncConfig {
+  List<String> langsJsonFiles() => langs.map((e) => '$e.json').toList();
+}
+
 extension StringExt on String {
   String tr() {
     return this;

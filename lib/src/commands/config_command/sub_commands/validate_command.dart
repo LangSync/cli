@@ -6,11 +6,14 @@ import 'package:langsync/src/etc/controllers/config_file.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:mason_logger/mason_logger.dart';
 
+/// {@template config_validate_command}
+/// A command to validate the existent LangSync configuration file in the current directory.
+/// {@endtemplate}
 class ConfigValidateCommand extends Command<int> {
-  ConfigValidateCommand({
-    required this.logger,
-  });
+  /// {@macro config_validate_command}
+  ConfigValidateCommand({required this.logger});
 
+  /// The logger to use.
   final Logger logger;
 
   @override
@@ -77,6 +80,7 @@ class ConfigValidateCommand extends Command<int> {
     }
   }
 
+  /// Returns a [ConfigFileController] from the given [configFiles].
   ConfigFileController _controllerFromFile({
     required List<FileSystemEntity> configFiles,
   }) {

@@ -8,7 +8,11 @@ import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
 
+/// {@template config_create_command}
+/// A command to create a new LangSync configuration file in the current directory.
+/// {@endtemplate}
 class ConfigCreateCommand extends Command<int> {
+  /// {@macro config_create_command}
   ConfigCreateCommand({
     required this.logger,
   }) {
@@ -62,6 +66,7 @@ class ConfigCreateCommand extends Command<int> {
     }
   }
 
+  /// Requests the user to overwrite the already existing config file.
   Future<int> _requestToOverwrite(
     File file,
     ConfigFileController configFileController,
@@ -87,6 +92,7 @@ class ConfigCreateCommand extends Command<int> {
     }
   }
 
+  /// Prompts the user to create a new config file with the given [configFileController].
   Future<int> _promptForConfigFileControllerCreation(
     ConfigFileController configFileController,
   ) async {

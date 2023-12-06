@@ -4,7 +4,11 @@ import 'package:langsync/src/commands/config_command/sub_commands/create_command
 import 'package:langsync/src/commands/config_command/sub_commands/validate_command.dart';
 import 'package:mason_logger/mason_logger.dart';
 
+/// {@template config_command}
+/// A command to manage LangSync configuration in the current directory.
+/// {@endtemplate}
 class ConfigCommand extends Command<int> {
+  /// {@macro config_command}
   ConfigCommand({
     required Logger logger,
   }) : _logger = logger {

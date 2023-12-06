@@ -12,9 +12,14 @@ import 'package:langsync/src/etc/models/result_locale.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
 
+/// {@template start_command}
+/// The start command, it starts the localization process.
+/// {@endtemplate}
 class StartCommand extends Command<int> {
+  /// {@macro start_command}
   StartCommand({required this.logger});
 
+  /// The logger to use.
   final Logger logger;
 
   @override

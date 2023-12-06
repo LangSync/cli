@@ -6,15 +6,14 @@ import 'package:args/command_runner.dart';
 import 'package:hive/hive.dart';
 import 'package:langsync/src/etc/controllers/config_file.dart';
 import 'package:langsync/src/etc/extensions.dart';
+import 'package:langsync/src/etc/models/config.dart';
 import 'package:langsync/src/etc/models/lang_output.dart';
 import 'package:langsync/src/etc/models/result_locale.dart';
 import 'package:langsync/src/etc/networking/client.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 class StartCommand extends Command<int> {
-  StartCommand({
-    required this.logger,
-  });
+  StartCommand({required this.logger});
 
   final Logger logger;
 
@@ -33,34 +32,30 @@ class StartCommand extends Command<int> {
 
     final apiKey = Hive.box<dynamic>('config').get('apiKey') as String?;
 
-    if (apiKey == null) {
-      configFilesValidationProgress.fail(
-        'You need to authenticate first with your account API key.',
-      );
+    final apiKeyError = _ensureApiKeyExists(
+      apiKey: apiKey,
+      configFilesValidationProgress: configFilesValidationProgress,
+    );
 
-      logger.docsInfo(path: '/cli-usage/auth');
-
-      return ExitCode.config.code;
+    if (apiKeyError != null) {
+      return apiKeyError;
     }
 
     ConfigFileController configFile;
 
     try {
-      final configFiles = ConfigFileController.configFilesInCurrentDir.toList();
-
-      configFile = _controllerFromFile(configFiles: configFiles);
+      configFile = _controllerFromFile();
     } catch (e) {
       return e as int;
     }
 
-    if (!configFile.configFileRef.existsSync()) {
-      configFilesValidationProgress.fail(
-        'No ${configFile.configFileName} file found, you need to create one and configure it.',
-      );
+    final configFileExistsErrorCode = _ensureConfigFileExists(
+      configFile: configFile,
+      configFilesValidationProgress: configFilesValidationProgress,
+    );
 
-      logger.docsInfo(path: '/cli-usage/configure');
-
-      return ExitCode.config.code;
+    if (configFileExistsErrorCode != null) {
+      return configFileExistsErrorCode;
     }
 
     configFilesValidationProgress
@@ -68,44 +63,14 @@ class StartCommand extends Command<int> {
 
     final parsedConfig = await configFile.parsed();
 
-    try {
-      configFilesValidationProgress
-          .update('Validating ${configFile.configFileName} file..');
+    final errorCode = await _ensureConfigFileIsNotCorrupted(
+      parsedConfig: parsedConfig,
+      configFilesValidationProgress: configFilesValidationProgress,
+      configFile: configFile,
+    );
 
-      configFile.validateConfigFields(parsedConfig);
-
-      configFilesValidationProgress.complete(
-        'Your ${configFile.configFileName} file and configuration are valid.',
-      );
-    } catch (e, stacktrace) {
-      logger.customErr(
-        progress: configFilesValidationProgress,
-        update: 'Something went wrong while validating your config file.',
-        stacktrace: stacktrace,
-        error: e,
-      );
-
-      try {
-        await NetClient.instance.logException(
-          e: e,
-          stacktrace: stacktrace,
-          commandName: name,
-        );
-
-        logger
-          ..info('\n')
-          ..warn(
-            'This error has been reported to the LangSync team, we will definitely look into it!',
-          );
-      } catch (e) {
-        logger
-          ..info('\n')
-          ..warn(
-            'This error could not be reported to the LangSync team, please report it manually, see https://docs.langsync.app/bug_report',
-          );
-      }
-
-      return ExitCode.config.code;
+    if (errorCode != null) {
+      return errorCode;
     }
 
     final asConfig = parsedConfig.toConfigModeled();
@@ -114,100 +79,12 @@ class StartCommand extends Command<int> {
       'Saving your source file at ${asConfig.sourceFile}..',
     );
 
-    try {
-      final jsonPartitionRes = await NetClient.instance.saveFile(
-        apiKey: apiKey,
-        sourceFile: File(asConfig.sourceFile),
-      );
-
-      savingSourceFileProgress
-          .complete('Your source file has been saved successfully.');
-
-      logger
-        ..info('\n')
-        ..warn(
-          'The ID of this operation is: ${jsonPartitionRes.operationId}. in case of any issues, please contact us providing this ID so we can help.',
-        );
-
-      final result = await aIProcessResult(
-        apiKey: apiKey,
-        langs: asConfig.langs,
-        languageLocalizationMaxDelay: asConfig.languageLocalizationMaxDelay,
-        operationId: jsonPartitionRes.operationId,
-        instruction: asConfig.instruction,
-      );
-
-      logger
-        ..info('\n')
-        ..info(
-          'Generating localization files: ${asConfig.langsJsonFiles().join(", ")}.',
-        );
-
-      final outputList =
-          await NetClient.instance.retrieveJsonPartitionWithOutput(
-        outputOperationId: result.outputOperationId,
-        apiKey: apiKey,
-      );
-
-      await _writeNewLocalizationFiles(
-        outputList: outputList,
-        outputDir: Directory(asConfig.outputDir),
-        operationId: jsonPartitionRes.operationId,
-      );
-
-      logger.success('All done!');
-
-      return ExitCode.success.code;
-    } catch (e, stacktrace) {
-      logger.customErr(
-        error: e,
-        stacktrace: stacktrace,
-        progress: savingSourceFileProgress,
-        update: 'Something went wrong, try again!',
-      );
-
-      try {
-        await NetClient.instance.logException(
-          e: e,
-          stacktrace: stacktrace,
-          commandName: name,
-        );
-
-        logger
-          ..info('\n')
-          ..warn(
-            'This error has been reported to the LangSync team, we will definitely look into it!',
-          );
-      } catch (e) {
-        logger
-          ..info('\n')
-          ..warn(
-            'This error could not be reported to the LangSync team, please report it manually, see https://docs.langsync.app/bug_report',
-          );
-      }
-
-      return ExitCode.software.code;
-    }
+    return await _loadResourcesAndStartProcess(
+      apiKey: apiKey,
+      asConfig: asConfig,
+      savingSourceFileProgress: savingSourceFileProgress,
+    );
   }
-
-  // void _writeResultToFiles({
-  //   required Map<String, JsonContentMap> res,
-  //   required Directory outputDir,
-  // }) {
-  //   final progress = logger.customProgress('Writing results to files..');
-
-  //   res.forEach((key, value) {
-  //     final file = File('${outputDir.path}/$key.json');
-
-  //     if (!file.existsSync()) {
-  //       file.createSync(recursive: true);
-  //     }
-
-  //     progress.update('Writing $key.json');
-
-  //     file.writeAsStringSync(value.toPrettyJson());
-  //   });
-  // }
 
   Future<void> _writeNewLocalizationFiles({
     required List<LangOutput> outputList,
@@ -277,7 +154,7 @@ class StartCommand extends Command<int> {
       ..success('All files are created successfully.');
   }
 
-  Future<LangSyncServerResultSSE> aIProcessResult({
+  Future<LangSyncServerResultSSE> _aiProcessResult({
     required String apiKey,
     required Iterable<String> langs,
     required String operationId,
@@ -316,9 +193,9 @@ class StartCommand extends Command<int> {
     return completer.future;
   }
 
-  ConfigFileController _controllerFromFile({
-    required List<FileSystemEntity> configFiles,
-  }) {
+  ConfigFileController _controllerFromFile() {
+    final configFiles = ConfigFileController.configFilesInCurrentDir.toList();
+
     if (configFiles.isEmpty) {
       logger
         ..info(
@@ -339,5 +216,168 @@ class StartCommand extends Command<int> {
     }
 
     return ConfigFileController.controllerFromFile(configFiles.first);
+  }
+
+  Future<int?> _ensureConfigFileIsNotCorrupted({
+    required Map<dynamic, dynamic> parsedConfig,
+    required Progress configFilesValidationProgress,
+    required ConfigFileController configFile,
+  }) async {
+    try {
+      configFilesValidationProgress
+          .update('Validating ${configFile.configFileName} file..');
+
+      configFile.validateConfigFields(parsedConfig);
+
+      configFilesValidationProgress.complete(
+        'Your ${configFile.configFileName} file and configuration are valid.',
+      );
+
+      return null;
+    } catch (e, stacktrace) {
+      logger.customErr(
+        progress: configFilesValidationProgress,
+        update: 'Something went wrong while validating your config file.',
+        stacktrace: stacktrace,
+        error: e,
+      );
+
+      try {
+        await NetClient.instance.logException(
+          e: e,
+          stacktrace: stacktrace,
+          commandName: name,
+        );
+
+        logger
+          ..info('\n')
+          ..warn(
+            'This error has been reported to the LangSync team, we will definitely look into it!',
+          );
+      } catch (e) {
+        logger
+          ..info('\n')
+          ..warn(
+            'This error could not be reported to the LangSync team, please report it manually, see https://docs.langsync.app/bug_report',
+          );
+      }
+
+      return ExitCode.config.code;
+    }
+  }
+
+  int? _ensureConfigFileExists({
+    required ConfigFileController configFile,
+    required Progress configFilesValidationProgress,
+  }) {
+    if (!configFile.configFileRef.existsSync()) {
+      configFilesValidationProgress.fail(
+        'No ${configFile.configFileName} file found, you need to create one and configure it.',
+      );
+
+      logger.docsInfo(path: '/cli-usage/configure');
+
+      return ExitCode.config.code;
+    } else {
+      return null;
+    }
+  }
+
+  int? _ensureApiKeyExists({
+    String? apiKey,
+    required Progress configFilesValidationProgress,
+  }) {
+    if (apiKey == null) {
+      configFilesValidationProgress.fail(
+        'You need to authenticate first with your account API key.',
+      );
+
+      logger.docsInfo(path: '/cli-usage/auth');
+
+      return ExitCode.config.code;
+    } else {
+      return null;
+    }
+  }
+
+  Future<int> _loadResourcesAndStartProcess({
+    required String? apiKey,
+    required LangSyncConfig asConfig,
+    required Progress savingSourceFileProgress,
+  }) async {
+    try {
+      final jsonPartitionRes = await NetClient.instance.saveFile(
+        apiKey: apiKey!,
+        sourceFile: File(asConfig.sourceFile),
+      );
+
+      savingSourceFileProgress
+          .complete('Your source file has been saved successfully.');
+
+      logger
+        ..info('\n')
+        ..warn(
+          'The ID of this operation is: ${jsonPartitionRes.operationId}. in case of any issues, please contact us providing this ID so we can help.',
+        );
+
+      final result = await _aiProcessResult(
+        apiKey: apiKey,
+        langs: asConfig.langs,
+        languageLocalizationMaxDelay: asConfig.languageLocalizationMaxDelay,
+        operationId: jsonPartitionRes.operationId,
+        instruction: asConfig.instruction,
+      );
+
+      logger
+        ..info('\n')
+        ..info(
+          'Generating localization files: ${asConfig.langsJsonFiles().join(", ")}.',
+        );
+
+      final outputList =
+          await NetClient.instance.retrieveJsonPartitionWithOutput(
+        outputOperationId: result.outputOperationId,
+        apiKey: apiKey,
+      );
+
+      await _writeNewLocalizationFiles(
+        outputList: outputList,
+        outputDir: Directory(asConfig.outputDir),
+        operationId: jsonPartitionRes.operationId,
+      );
+
+      logger.success('All done!');
+
+      return ExitCode.success.code;
+    } catch (e, stacktrace) {
+      logger.customErr(
+        error: e,
+        stacktrace: stacktrace,
+        progress: savingSourceFileProgress,
+        update: 'Something went wrong, try again!',
+      );
+
+      try {
+        await NetClient.instance.logException(
+          e: e,
+          stacktrace: stacktrace,
+          commandName: name,
+        );
+
+        logger
+          ..info('\n')
+          ..warn(
+            'This error has been reported to the LangSync team, we will definitely look into it!',
+          );
+      } catch (e) {
+        logger
+          ..info('\n')
+          ..warn(
+            'This error could not be reported to the LangSync team, please report it manually, see https://docs.langsync.app/bug_report',
+          );
+      }
+
+      return ExitCode.software.code;
+    }
   }
 }

@@ -86,6 +86,7 @@ class StartCommand extends Command<int> {
     );
   }
 
+  /// Writes the new localization files to the output directory, it contains the error handler as well for errored results.
   Future<void> _writeNewLocalizationFiles({
     required List<LangOutput> outputList,
     required Directory outputDir,
@@ -154,6 +155,7 @@ class StartCommand extends Command<int> {
       ..success('All files are created successfully.');
   }
 
+  /// Starts the AI process and returns the result as a [LangSyncServerResultSSE] object.
   Future<LangSyncServerResultSSE> _aiProcessResult({
     required String apiKey,
     required Iterable<String> langs,
@@ -193,6 +195,7 @@ class StartCommand extends Command<int> {
     return completer.future;
   }
 
+  /// Returns the [ConfigFileController] that should be used.
   ConfigFileController _controllerFromFile() {
     final configFiles = ConfigFileController.configFilesInCurrentDir.toList();
 
@@ -218,6 +221,7 @@ class StartCommand extends Command<int> {
     return ConfigFileController.controllerFromFile(configFiles.first);
   }
 
+  /// Ensures that the config file is not corrupted, and that it contains all the required and valid fields.
   Future<int?> _ensureConfigFileIsNotCorrupted({
     required Map<dynamic, dynamic> parsedConfig,
     required Progress configFilesValidationProgress,
@@ -266,6 +270,7 @@ class StartCommand extends Command<int> {
     }
   }
 
+  /// Ensures that the config file exists.
   int? _ensureConfigFileExists({
     required ConfigFileController configFile,
     required Progress configFilesValidationProgress,
@@ -283,6 +288,7 @@ class StartCommand extends Command<int> {
     }
   }
 
+  /// Ensures that the API key is saved in the local database, and that it exists.
   int? _ensureApiKeyExists({
     String? apiKey,
     required Progress configFilesValidationProgress,
@@ -300,6 +306,7 @@ class StartCommand extends Command<int> {
     }
   }
 
+  /// Loads the resources and starts the localization process.
   Future<int> _loadResourcesAndStartProcess({
     required String? apiKey,
     required LangSyncConfig asConfig,

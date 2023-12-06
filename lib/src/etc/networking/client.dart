@@ -49,7 +49,7 @@ class NetClient extends NetClientBoilerPlate {
     );
   }
 
-  Future<PartitionResponse> saveFile({
+  Future<SaveFileOperation> saveFile({
     required String apiKey,
     required File sourceFile,
   }) {
@@ -58,12 +58,12 @@ class NetClient extends NetClientBoilerPlate {
       'post',
       {'Authorization': 'Bearer $apiKey'},
       {'sourceFile': sourceFile},
-      PartitionResponse.fromJson,
+      SaveFileOperation.fromJson,
     );
   }
 
   Future<List<LangOutput>> retrieveJsonPartitionWithOutput({
-    required String outputoperationId,
+    required String outputOperationId,
     required String apiKey,
   }) {
     return makeRes(
@@ -73,7 +73,7 @@ class NetClient extends NetClientBoilerPlate {
         'Authorization': 'Bearer $apiKey',
       },
       {
-        'operationId': outputoperationId,
+        'operationId': outputOperationId,
       },
       (res) {
         final output = (res['output'] as List)

@@ -1,15 +1,20 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
-class PartitionResponse extends Equatable {
+/// {@template operation}
+/// An Operation model, it holds the operation id and the operation type.
+/// {@endtemplate}
+class SaveFileOperation extends Equatable {
+  /// The operation id.
   final String operationId;
 
-  const PartitionResponse({
+  /// {@macro operation}
+  const SaveFileOperation({
     required this.operationId,
   });
 
-  factory PartitionResponse.fromJson(Map<String, dynamic> json) {
-    return PartitionResponse(
+  /// Creates a [SaveFileOperation] from a [Map].
+  factory SaveFileOperation.fromJson(Map<String, dynamic> json) {
+    return SaveFileOperation(
       operationId: json['operationId'] as String,
     );
   }

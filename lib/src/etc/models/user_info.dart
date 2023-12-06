@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:langsync/src/etc/models/localization_doc.dart';
 
+//! Schedule for removal.
 class UserInfo extends Equatable {
   const UserInfo({
     required this.userId,

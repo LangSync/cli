@@ -1,32 +1,22 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-typedef JsonContentMap = Map<String, dynamic>;
+import 'package:langsync/src/etc/enums.dart';
 
-enum LangSyncServerSSEType { info, warn, error, result }
-
+/// {@template lang_sync_server_sse}
+/// A LangSync Server SSE model, it holds the message, the type, the status code and the date.
+/// {@endtemplate}
 class LangSyncServerSSE extends Equatable {
-  final String message;
-  final LangSyncServerSSEType type;
-  final int statusCode;
-  final DateTime date;
-
+  /// {@macro lang_sync_server_sse}
   const LangSyncServerSSE({
     required this.message,
     required this.type,
     required this.statusCode,
     required this.date,
   });
-  @override
-  List<Object?> get props => [
-        message,
-        type,
-        statusCode,
-        date,
-      ];
 
+  /// Creates a [LangSyncServerSSE] from a [Map].
   factory LangSyncServerSSE.fromJson(Map<String, dynamic> res) {
     final type = LangSyncServerSSEType.values.firstWhere(
       (element) => element.name == res['type'] as String,
@@ -43,25 +33,48 @@ class LangSyncServerSSE extends Equatable {
       );
     }
   }
+
+  /// The message of the SSE.
+  final String message;
+
+  /// The type of the SSE.
+  final LangSyncServerSSEType type;
+
+  /// The status code of the SSE.
+  final int statusCode;
+
+  /// The date of the SSE.
+  final DateTime date;
+
+  @override
+  List<Object?> get props => [
+        message,
+        type,
+        statusCode,
+        date,
+      ];
 }
 
+/// {@template lang_sync_server_result_sse}
+/// A LangSync Server Result SSE model, it holds the message, the type, the status code, the date and the output operation id.
+/// {@endtemplate}
 class LangSyncServerResultSSE extends LangSyncServerSSE {
-  final String outputoperationId;
-
+  /// {@macro lang_sync_server_result_sse}
   const LangSyncServerResultSSE({
-    required this.outputoperationId,
+    required this.outputOperationId,
     required super.message,
     required super.type,
     required super.statusCode,
     required super.date,
   });
 
+  /// Creates a [LangSyncServerResultSSE] from a [Map].
   factory LangSyncServerResultSSE.fromJson(Map<String, dynamic> res) {
     final message = res['message'] as String;
     final decoded = jsonDecode(message) as Map<String, dynamic>;
 
     return LangSyncServerResultSSE(
-      outputoperationId: decoded['operationId'] as String,
+      outputOperationId: decoded['operationId'] as String,
       message: message,
       statusCode: res['statusCode'] as int,
       type: // this is hardcoded, butsince we are sure that it is correct.
@@ -72,9 +85,12 @@ class LangSyncServerResultSSE extends LangSyncServerSSE {
     );
   }
 
+  /// The output operation id.
+  final String outputOperationId;
+
   @override
   List<Object?> get props => [
-        outputoperationId,
+        outputOperationId,
         super.message,
         super.type,
         super.statusCode,
@@ -82,7 +98,11 @@ class LangSyncServerResultSSE extends LangSyncServerSSE {
       ];
 }
 
+/// {@template lang_sync_server_logger_sse}
+/// A LangSync Server Logger SSE model, it holds the message, the type, the status code and the date.
+/// {@endtemplate}
 class LangSyncServerLoggerSSE extends LangSyncServerSSE {
+  /// {@macro lang_sync_server_logger_sse}
   const LangSyncServerLoggerSSE({
     required super.date,
     required super.message,

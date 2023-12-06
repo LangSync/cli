@@ -1,6 +1,10 @@
 import 'package:equatable/equatable.dart';
 
+/// {@template localization_doc}
+/// A Localization Doc model, it holds the created at date, the operation id, the json parts length and the output langs.
+/// {@endtemplate}
 class LocalizationDoc extends Equatable {
+  /// {@macro localization_doc}
   const LocalizationDoc({
     required this.createdAt,
     required this.operationId,
@@ -8,6 +12,7 @@ class LocalizationDoc extends Equatable {
     this.outputLangs,
   });
 
+  /// Creates a [LocalizationDoc] from a [Map].
   factory LocalizationDoc.fromJson(Map<String, dynamic> json) {
     return LocalizationDoc(
       createdAt: DateTime.parse(json['createdAt'] as String),
@@ -23,9 +28,16 @@ class LocalizationDoc extends Equatable {
     );
   }
 
+  /// The created at date.
   final DateTime createdAt;
+
+  /// The operation id.
   final String operationId;
+
+  /// The json parts length.
   final int jsonPartsLength;
+
+  /// The output langs.
   final List<String>? outputLangs;
 
   @override

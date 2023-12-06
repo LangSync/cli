@@ -145,7 +145,7 @@ class StartCommand extends Command<int> {
 
       final outputList =
           await NetClient.instance.retrieveJsonPartitionWithOutput(
-        outputoperationId: result.outputoperationId,
+        outputOperationId: result.outputOperationId,
         apiKey: apiKey,
       );
 

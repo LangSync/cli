@@ -1,31 +1,37 @@
 import 'dart:io';
 
 import 'package:args/src/arg_results.dart';
+import 'package:langsync/src/etc/controllers/json.dart';
+import 'package:langsync/src/etc/controllers/yaml.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:meta/meta.dart';
 
-import 'package:langsync/src/etc/controllers/json.dart';
-import 'package:langsync/src/etc/controllers/yaml.dart';
-
 /// Decided and manages the LangSync config file controller.
 abstract class ConfigFileController {
-  /// Created the convenable [ConfigFileController] from the [argResults] of the CLI call.
+  /// Created the convenable [ConfigFileController] from the [argResults].
   /// If no [argResults] are provided, the default controller is returned.
   static ConfigFileController fromArgResults(ArgResults argResults) {
     final isJson = argResults['json'] == true;
     final isYaml = argResults['yaml'] == true;
 
-    if (isJson) {
-      return JsonController();
-    } else if (isYaml) {
-      return YamlController();
+    final existentsControllers = _controllers.entries
+        .where(
+          (entry) =>
+              isJson && entry.key.contains('json') ||
+              isYaml && entry.key.contains('yaml'),
+        )
+        .toList();
+
+    if (existentsControllers.isNotEmpty) {
+      return existentsControllers.first.value;
     } else {
       return defaultController;
     }
   }
 
   /// The controllers that are supported by LangSync, the goal of this implementation is to make it easy to locate the expected config file name of each and to be able to add more in the future.
+  @protected
   static final Map<String, ConfigFileController> _controllers = [
     YamlController(),
     JsonController(),
@@ -88,6 +94,7 @@ abstract class ConfigFileController {
   }
 
   /// Validates the config file fields of LangSync, this is universal and static because it relies on the config file content parsed as a map.
+  @mustCallSuper
   bool validateConfigFields(Map<dynamic, dynamic> parsedConfigAsMap) {
     final langsyncConfig = parsedConfigAsMap['langsync'] as Map?;
 

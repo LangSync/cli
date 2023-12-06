@@ -4,10 +4,13 @@ import 'package:langsync/src/etc/controllers/config_file.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:yaml/yaml.dart' as yaml;
 
+/// A YAML config file controller.
 class YamlController extends ConfigFileController {
+  /// The config file reference.
   @override
   File get configFileRef => File('./langsync.yaml');
 
+  /// The config parsed as a [Map].
   @override
   Future<Map<dynamic, dynamic>> parsed() async {
     return super.parsedConfigFileControllerContent(
@@ -17,19 +20,20 @@ class YamlController extends ConfigFileController {
     );
   }
 
+  /// Writes the new [config] to the config file.
   @override
   void writeNewConfig(Map<String, dynamic> config) async {
     super.writeToConfigFileController('langsync:\n');
-
-    await _iterateAndWriteToConfigFileController(config);
+    return _iterateAndWriteToConfigFileController(config);
   }
 
-  Future<void> _iterateAndWriteToConfigFileController(
+  /// Iterates over the [config] and writes it to the config file.
+  void _iterateAndWriteToConfigFileController(
     Map<dynamic, dynamic> config,
-  ) async {
-    super.iterateOverConfig(
+  ) {
+    return super.iterateOverConfig(
       config,
-      callback: (entry) async {
+      callback: (entry) {
         if (entry.value is String) {
           if ((entry.value as String).isPathToFileOrFolder()) {
             super.writeToConfigFileController(

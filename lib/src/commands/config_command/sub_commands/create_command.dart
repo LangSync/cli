@@ -39,7 +39,8 @@ class ConfigCreateCommand extends Command<int> {
 
   @override
   Future<int> run() async {
-    final configFileController = ConfigFile.fromArgResults(argResults!);
+    final configFileController =
+        ConfigFileController.fromArgResults(argResults!);
 
     try {
       final file = configFileController.configFileRef;
@@ -51,7 +52,8 @@ class ConfigCreateCommand extends Command<int> {
 
         return await _requestToOverwrite(file, configFileController);
       } else {
-        return await _promptForConfigFileCreation(configFileController);
+        return await _promptForConfigFileControllerCreation(
+            configFileController);
       }
     } catch (e) {
       logger.err(e.toString());
@@ -62,7 +64,7 @@ class ConfigCreateCommand extends Command<int> {
 
   Future<int> _requestToOverwrite(
     File file,
-    ConfigFile configFileController,
+    ConfigFileController configFileController,
   ) async {
     final confirmOverwrite = logger.confirm('Do you want to overwrite it?');
 
@@ -85,8 +87,8 @@ class ConfigCreateCommand extends Command<int> {
     }
   }
 
-  Future<int> _promptForConfigFileCreation(
-    ConfigFile configFileController,
+  Future<int> _promptForConfigFileControllerCreation(
+    ConfigFileController configFileController,
   ) async {
     const examplePath = './locales/en.json';
 
@@ -166,14 +168,12 @@ class ConfigCreateCommand extends Command<int> {
     );
 
     // Create the config with the given
-    final config = configFileController.futureConfigToWrite(
-      config: LangSyncConfig(
-        outputDir: outputDir,
-        sourceFile: sourceLocalizationFilePath,
-        langs: targetLangsList,
-        instruction: instruction,
-      ),
-    );
+    final config = LangSyncConfig(
+      outputDir: outputDir,
+      sourceFile: sourceLocalizationFilePath,
+      langs: targetLangsList,
+      instruction: instruction,
+    ).toMap();
 
     final creationProgress = logger.customProgress(
       'Creating ${configFileController.configFileName} file',
@@ -186,7 +186,7 @@ class ConfigCreateCommand extends Command<int> {
         '${configFileController.configFileName} file is created, updating it with your config...',
       );
 
-      await configFileController.writeNewConfig(config);
+      configFileController.writeNewConfig(config);
 
       creationProgress.complete(
         '${configFileController.configFileName} file created & updated with your config successfully.',

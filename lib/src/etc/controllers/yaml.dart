@@ -4,13 +4,13 @@ import 'package:langsync/src/etc/controllers/config_file.dart';
 import 'package:langsync/src/etc/extensions.dart';
 import 'package:yaml/yaml.dart' as yaml;
 
-class YamlController extends ConfigFile {
+class YamlController extends ConfigFileController {
   @override
   File get configFileRef => File('./langsync.yaml');
 
   @override
   Future<Map<dynamic, dynamic>> parsed() async {
-    return super.parsedConfigFileContent(
+    return super.parsedConfigFileControllerContent(
       loadConfigAsMapCallback: (fileContentAsString) async {
         return await yaml.loadYaml(fileContentAsString) as Map;
       },
@@ -18,13 +18,13 @@ class YamlController extends ConfigFile {
   }
 
   @override
-  Future<void> writeNewConfig(Map<String, dynamic> config) async {
-    await super.writeToConfigFile('langsync:\n');
+  void writeNewConfig(Map<String, dynamic> config) async {
+    super.writeToConfigFileController('langsync:\n');
 
-    await _iterateAndWriteToConfigFile(config);
+    await _iterateAndWriteToConfigFileController(config);
   }
 
-  Future<void> _iterateAndWriteToConfigFile(
+  Future<void> _iterateAndWriteToConfigFileController(
     Map<dynamic, dynamic> config,
   ) async {
     super.iterateOverConfig(
@@ -32,14 +32,14 @@ class YamlController extends ConfigFile {
       callback: (entry) async {
         if (entry.value is String) {
           if ((entry.value as String).isPathToFileOrFolder()) {
-            await super.writeToConfigFile(
+            super.writeToConfigFileController(
               "\n  ${entry.key}: '${entry.value}' \n",
             );
             return;
           }
         }
 
-        await super.writeToConfigFile(
+        super.writeToConfigFileController(
           '\n  ${entry.key}: ${entry.value} \n',
         );
       },

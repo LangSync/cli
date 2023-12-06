@@ -43,10 +43,10 @@ class StartCommand extends Command<int> {
       return ExitCode.config.code;
     }
 
-    ConfigFile configFile;
+    ConfigFileController configFile;
 
     try {
-      final configFiles = ConfigFile.configFilesInCurrentDir.toList();
+      final configFiles = ConfigFileController.configFilesInCurrentDir.toList();
 
       configFile = _controllerFromFile(configFiles: configFiles);
     } catch (e) {
@@ -316,7 +316,7 @@ class StartCommand extends Command<int> {
     return completer.future;
   }
 
-  ConfigFile _controllerFromFile({
+  ConfigFileController _controllerFromFile({
     required List<FileSystemEntity> configFiles,
   }) {
     if (configFiles.isEmpty) {
@@ -338,6 +338,6 @@ class StartCommand extends Command<int> {
       throw ExitCode.software.code;
     }
 
-    return ConfigFile.controllerFromFile(configFiles.first);
+    return ConfigFileController.controllerFromFile(configFiles.first);
   }
 }

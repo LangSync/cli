@@ -7,47 +7,57 @@ import 'package:meta/meta.dart';
 
 import 'package:langsync/src/etc/controllers/json.dart';
 import 'package:langsync/src/etc/controllers/yaml.dart';
-import 'package:langsync/src/etc/models/config.dart';
 
-abstract class ConfigFile {
-  static ConfigFile fromArgResults(ArgResults argResults) {
-    if (argResults['json'] == true) {
+/// Decided and manages the LangSync config file controller.
+abstract class ConfigFileController {
+  /// Created the convenable [ConfigFileController] from the [argResults] of the CLI call.
+  /// If no [argResults] are provided, the default controller is returned.
+  static ConfigFileController fromArgResults(ArgResults argResults) {
+    final isJson = argResults['json'] == true;
+    final isYaml = argResults['yaml'] == true;
+
+    if (isJson) {
       return JsonController();
-    } else if (argResults['yaml'] == true) {
+    } else if (isYaml) {
       return YamlController();
     } else {
       return defaultController;
     }
   }
 
-  static final Map<String, ConfigFile> _controllers = [
+  /// The controllers that are supported by LangSync, the goal of this implementation is to make it easy to locate the expected config file name of each and to be able to add more in the future.
+  static final Map<String, ConfigFileController> _controllers = [
     YamlController(),
     JsonController(),
   ].asMap().map(
         (_, controller) => MapEntry(controller.configFileName, controller),
       );
 
-  static Iterable<FileSystemEntity> get configFilesInCurrentDir =>
-      Directory('.').listSync().where(
-        (file) {
-          final fileName = file.fileNameOnly;
+  /// Returns the existant expected config files of the controllers in the current directory. (the project directory)
+  static Iterable<FileSystemEntity> get configFilesInCurrentDir {
+    final fileEntities = Directory('.').listSync();
 
-          return _controllers.containsKey(fileName);
-        },
-      );
+    return fileEntities.where(
+      (file) => _controllers.containsKey(file.fileNameOnly),
+    );
+  }
 
-  static ConfigFile get defaultController => YamlController();
+  /// Returns the default controller of LangSync, which is the [YamlController].
+  /// This is the controller that is used when no controller is specified.
+  static ConfigFileController get defaultController => YamlController();
 
+  /// The config file reference.
   File get configFileRef;
 
   // String get configFileExtension => configFileRef.path.split('.').last;
-
   String get configFileName => configFileRef.fileNameOnly;
 
+  /// The config file content parsed as a map of dynamic keys and values.
   Future<Map<dynamic, dynamic>> parsed();
 
+  /// !
   @protected
-  Future<Map<dynamic, dynamic>> parsedConfigFileContent({
+  Future<Map<dynamic, dynamic>> parsedConfigFileControllerContent({
     required Future<Map<dynamic, dynamic>> Function(String fileContentAsString)
         loadConfigAsMapCallback,
   }) async {
@@ -60,11 +70,13 @@ abstract class ConfigFile {
     return loadConfigAsMapCallback(asString);
   }
 
+  /// Creates the config file if it does not exist.
   Future<File> createConfigFile() {
     return configFileRef.create();
   }
 
-  Future<void> writeToConfigFile(String writableContent) async {
+  /// Writes the raw [writableContent] string to the config file.
+  void writeToConfigFileController(String writableContent) {
     if (!configFileRef.existsSync()) {
       throw Exception('Config file does not exist.');
     }
@@ -75,6 +87,7 @@ abstract class ConfigFile {
     );
   }
 
+  /// Validates the config file fields of LangSync, this is universal and static because it relies on the config file content parsed as a map.
   bool validateConfigFields(Map<dynamic, dynamic> parsedConfigAsMap) {
     final langsyncConfig = parsedConfigAsMap['langsync'] as Map?;
 
@@ -117,12 +130,7 @@ abstract class ConfigFile {
     }
   }
 
-  Map<String, dynamic> futureConfigToWrite({
-    required LangSyncConfig config,
-  }) {
-    return config.toMap();
-  }
-
+  /// Logs the config file fields of LangSync, this is universal and static because it relies on the config file content parsed as a map.
   void iterateAndLogConfig(Map<dynamic, dynamic> parsedYaml, Logger logger) {
     logger.info('');
 
@@ -136,6 +144,7 @@ abstract class ConfigFile {
     logger.info('');
   }
 
+  /// Iterates over the config file fields of LangSync, this is universal and static because it relies on the config file content parsed as a map.
   void iterateOverConfig(
     Map<dynamic, dynamic> config, {
     required void Function(MapEntry<dynamic, dynamic> configEntry) callback,
@@ -145,9 +154,11 @@ abstract class ConfigFile {
     }
   }
 
-  Future<void> writeNewConfig(Map<String, dynamic> config);
+  /// Writes the new config file to the config file controller.
+  void writeNewConfig(Map<String, dynamic> config);
 
-  static ConfigFile controllerFromFile(FileSystemEntity file) {
+  /// Returns the config file controller from the [file].
+  static ConfigFileController controllerFromFile(FileSystemEntity file) {
     final fileName = file.fileNameOnly;
 
     return _controllers[fileName]!;

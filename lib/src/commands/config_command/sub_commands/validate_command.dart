@@ -22,9 +22,9 @@ class ConfigValidateCommand extends Command<int> {
 
   @override
   Future<int>? run() async {
-    final configFiles = ConfigFile.configFilesInCurrentDir.toList();
+    final configFiles = ConfigFileController.configFilesInCurrentDir.toList();
 
-    ConfigFile configFile;
+    ConfigFileController configFile;
 
     try {
       configFile = _controllerFromFile(configFiles: configFiles);
@@ -77,7 +77,7 @@ class ConfigValidateCommand extends Command<int> {
     }
   }
 
-  ConfigFile _controllerFromFile({
+  ConfigFileController _controllerFromFile({
     required List<FileSystemEntity> configFiles,
   }) {
     if (configFiles.isEmpty) {
@@ -99,6 +99,6 @@ class ConfigValidateCommand extends Command<int> {
       throw ExitCode.software.code;
     }
 
-    return ConfigFile.controllerFromFile(configFiles.first);
+    return ConfigFileController.controllerFromFile(configFiles.first);
   }
 }

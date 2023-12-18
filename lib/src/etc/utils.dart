@@ -4,11 +4,11 @@ import 'dart:math';
 final utils = Utils();
 
 class Utils {
-  final isDebugMode = true;
+  final isDebugMode = false;
 
 //! notice the "/"
   String get baseUrl =>
-      isDebugMode ? 'http://192.168.0.5:5559' : 'http://api.langsync.app';
+      isDebugMode ? 'http://192.168.0.5:5559' : 'https://api.langsync.app';
 
   bool isValidApiKeyFormatted(String apiKey) {
     final isNotEmpty = apiKey.isNotEmpty;

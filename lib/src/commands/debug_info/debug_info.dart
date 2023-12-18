@@ -9,11 +9,11 @@ import 'package:mason_logger/mason_logger.dart';
 ///  A command to show some useful info while debugging, this command is made for devlopemnet and it should not appear on production version
 /// {@endtemplate}
 class DebugInfoCommand extends Command<int> {
-  /// The logger to use.
-  final Logger logger;
-
   /// {@macro debug_info_command}
   DebugInfoCommand({required this.logger});
+
+  /// The logger to use.
+  final Logger logger;
 
   @override
   String get description =>

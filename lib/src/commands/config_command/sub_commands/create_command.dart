@@ -57,7 +57,8 @@ class ConfigCreateCommand extends Command<int> {
         return await _requestToOverwrite(file, configFileController);
       } else {
         return await _promptForConfigFileControllerCreation(
-            configFileController);
+          configFileController,
+        );
       }
     } catch (e) {
       logger.err(e.toString());

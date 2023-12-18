@@ -295,8 +295,8 @@ class StartCommand extends Command<int> {
 
   /// Ensures that the API key is saved in the local database, and that it exists.
   int? _ensureApiKeyExists({
-    String? apiKey,
     required Progress configFilesValidationProgress,
+    String? apiKey,
   }) {
     if (apiKey == null) {
       configFilesValidationProgress.fail(

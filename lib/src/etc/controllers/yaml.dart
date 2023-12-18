@@ -22,7 +22,7 @@ class YamlController extends ConfigFileController {
 
   /// Writes the new [config] to the config file.
   @override
-  void writeNewConfig(Map<String, dynamic> config) async {
+  Future<void> writeNewConfig(Map<String, dynamic> config) async {
     super.writeToConfigFileController('langsync:\n');
     return _iterateAndWriteToConfigFileController(config);
   }

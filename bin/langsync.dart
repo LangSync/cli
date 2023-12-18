@@ -10,12 +10,7 @@ Future<void> main(List<String> args) async {
 
   Hive.init(langSyncDir.path);
 
-  final box = await Hive.openBox<dynamic>('config');
-
-  await box.put(
-    'apiKey',
-    'f3c5d5721020da969a0a1f65686723a1484ba4bd167b0b08daeaa6bb6312fefc',
-  );
+  await Hive.openBox<dynamic>('config');
 
   await _flushThenExit(await LangsyncCommandRunner().run(args));
 }

@@ -4,9 +4,6 @@ import 'package:equatable/equatable.dart';
 /// An Operation model, it holds the operation id and the operation type.
 /// {@endtemplate}
 class SaveFileOperation extends Equatable {
-  /// The operation id.
-  final String operationId;
-
   /// {@macro operation}
   const SaveFileOperation({
     required this.operationId,
@@ -18,6 +15,9 @@ class SaveFileOperation extends Equatable {
       operationId: json['operationId'] as String,
     );
   }
+
+  /// The operation id.
+  final String operationId;
 
   @override
   List<Object?> get props => [

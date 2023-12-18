@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:cli_completion/cli_completion.dart';
+import 'package:langsync/src/commands/auth_command/auth.dart';
 import 'package:langsync/src/commands/config_command/config_command.dart';
 import 'package:langsync/src/commands/debug_info/debug_info.dart';
 import 'package:langsync/src/commands/start_command/start_command.dart';
@@ -43,9 +44,8 @@ class LangsyncCommandRunner extends CompletionCommandRunner<int> {
         help: 'Print verbose output.',
       );
 
-    // addCommand(AccountCommand(logger: _logger));
+    addCommand(AuthCommand(logger: _logger));
     addCommand(ConfigCommand(logger: _logger));
-    // addCommand(SupportedLangsCommand(logger: _logger));
     addCommand(StartCommand(logger: _logger));
 
     if (utils.isDebugMode) addCommand(DebugInfoCommand(logger: _logger));

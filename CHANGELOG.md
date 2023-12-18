@@ -36,3 +36,8 @@
 ## 0.9.5
 
 - Added support for the AI instruction field which allow for your own custom instructions to be executed during the localization process.
+
+## 1.0.0
+
+- Expose unique users authentication via their API keys got from <https://my.langsync.app>
+- Bug Fixes

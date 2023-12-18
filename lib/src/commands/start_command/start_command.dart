@@ -100,7 +100,7 @@ class StartCommand extends Command<int> {
     for (var index = 0; index < outputList.length; index++) {
       final current = outputList[index];
 
-      final isError = current.jsonFormattedResponse['langsyncError'] != null;
+      final isError = current.objectDecodedResponse['langsyncError'] != null;
 
       if (isError) {
         final fileName = '${current.lang}.error.json';
@@ -123,7 +123,7 @@ class StartCommand extends Command<int> {
               'message':
                   'Please, if you think that this is an unexpected bug in LangSync, contact us so we can help',
               'operationId': operationId,
-              'processedResponse': current.jsonFormattedResponse,
+              'processedResponse': current.objectDecodedResponse,
               'target_language': current.lang,
               'success_file_name': '${current.lang}.json',
               'LocalizationTryDate': {
@@ -147,7 +147,7 @@ class StartCommand extends Command<int> {
         await file.create();
         await file.writeAsString(
           const JsonEncoder.withIndent('   ')
-              .convert(current.jsonFormattedResponse),
+              .convert(current.objectDecodedResponse),
         );
 
         progress.complete(

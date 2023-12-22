@@ -36,6 +36,14 @@ And Boom, you have it. Confirm the installation by checking the version of LangS
 ```bash
 langsync --version
 ```
+## Authentication
+After Getting your API key from your [Dashboard](https://my.langsync.app), run this command:
+
+```bash
+langsync auth --api-key=<YOUR_API_KEY_HERE>
+```
+
+And you have it, now all future requests will validate and use it.
 
 ## 📘 Dive into Documentation
 
